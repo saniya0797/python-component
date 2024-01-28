@@ -13,16 +13,23 @@ import programmingtheiot.common.ConfigConst as ConfigConst
 
 from programmingtheiot.cda.system.BaseSystemUtilTask import BaseSystemUtilTask
 
+
 class SystemCpuUtilTask(BaseSystemUtilTask):
-	"""
-	Shell representation of class for student implementation.
-	
-	"""
+    """
+    Shell representation of class for student implementation.
+    Inherits from BaseSystemUtilTask.
+    """
 
-	def __init__(self):
-		super(SystemCpuUtilTask, self).__init__(name = ConfigConst.CPU_UTIL_NAME, typeID = ConfigConst.CPU_UTIL_TYPE)
+    def __init__(self):
+        """
+        Constructor to initialize the SystemCpuUtilTask object.
+        """
+        super(SystemCpuUtilTask, self).__init__(name=ConfigConst.CPU_UTIL_NAME, typeID=ConfigConst.CPU_UTIL_TYPE)
 
-	
-	def getTelemetryValue(self) -> float:
-		return psutil.cpu_percent()
-		
+    def getTelemetryValue(self) -> float:
+        """
+        Retrieves the current CPU utilization as telemetry value.
+
+        :return: The CPU utilization as a float value.
+        """
+        return psutil.cpu_percent()

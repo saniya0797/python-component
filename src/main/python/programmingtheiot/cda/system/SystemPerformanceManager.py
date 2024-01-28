@@ -22,59 +22,89 @@ from programmingtheiot.cda.system.SystemMemUtilTask import SystemMemUtilTask
 from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
 from apscheduler.schedulers.background import BackgroundScheduler
 
+
 class SystemPerformanceManager(object):
-	"""
-	Shell representation of class for student implementation.
-	
-	"""
+    """
+    Shell representation of class for student implementation.
+    Manages system performance tasks, such as CPU and memory utilization.
+    """
 
-	def __init__(self):
-		configUtil = ConfigUtil()
-	
-		self.pollRate = \
-			configUtil.getInteger( \
-				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.POLL_CYCLES_KEY, defaultVal = ConfigConst.DEFAULT_POLL_CYCLES)
-		
-		self.locationID = \
-			configUtil.getProperty( \
-				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.DEVICE_LOCATION_ID_KEY, defaultVal = ConfigConst.NOT_SET)
-		
-		if self.pollRate <= 0:
-			self.pollRate = ConfigConst.DEFAULT_POLL_CYCLES
-		
-		self.dataMsgListener = None
-		
+    def __init__(self):
+        """
+        Constructor to initialize the SystemPerformanceManager object.
+        """
+        # Create an instance of ConfigUtil for configuration
+        configUtil = ConfigUtil()
 
-		self.scheduler = BackgroundScheduler()
-		self.scheduler.add_job(self.handleTelemetry, 'interval', seconds = self.pollRate)
-		
-		self.cpuUtilTask = SystemCpuUtilTask()
-		self.memUtilTask = SystemMemUtilTask()
+        # Retrieve poll rate from configuration
+        self.pollRate = configUtil.getInteger(
+            section=ConfigConst.CONSTRAINED_DEVICE, key=ConfigConst.POLL_CYCLES_KEY,
+            defaultVal=ConfigConst.DEFAULT_POLL_CYCLES)
 
-	def handleTelemetry(self):
-		cpuUtilPct = self.cpuUtilTask.getTelemetryValue()
-		memUtilPct = self.memUtilTask.getTelemetryValue()
-	
-		logging.debug('CPU utilization is %s percent, and memory utilization is %s percent.', str(cpuUtilPct), str(memUtilPct))
-		
-	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
-		pass
-	
-	def startManager(self):
-		logging.info("Starting SystemPerformanceManager...")
-	
-		if not self.scheduler.running:
-			self.scheduler.start()
-			logging.info("Started SystemPerformanceManager.")
-		else:
-			logging.warning("SystemPerformanceManager scheduler already started. Ignoring.")
-		
-	def stopManager(self):
-		logging.info("Stopping SystemPerformanceManager...")
-	
-		try:
-			self.scheduler.shutdown()
-			logging.info("Stopped SystemPerformanceManager.")
-		except:
-			logging.warning("SystemPerformanceManager scheduler already stopped. Ignoring.")
+        # Retrieve location ID from configuration
+        self.locationID = configUtil.getProperty(
+            section=ConfigConst.CONSTRAINED_DEVICE, key=ConfigConst.DEVICE_LOCATION_ID_KEY,
+            defaultVal=ConfigConst.NOT_SET)
 
+        # Set default poll rate if the retrieved value is invalid
+        if self.pollRate <= 0:
+            self.pollRate = ConfigConst.DEFAULT_POLL_CYCLES
+
+        # Initialize data message listener to None
+        self.dataMsgListener = None
+
+        # Initialize the scheduler for background jobs
+        self.scheduler = BackgroundScheduler()
+        # Schedule the handleTelemetry method to run at a fixed interval
+        self.scheduler.add_job(self.handleTelemetry, 'interval', seconds=self.pollRate)
+
+        # Create instances of system utilization tasks
+        self.cpuUtilTask = SystemCpuUtilTask()
+        self.memUtilTask = SystemMemUtilTask()
+
+    def handleTelemetry(self):
+        """
+        Handles telemetry by retrieving and logging CPU and memory utilization.
+        """
+        # Retrieve CPU and memory utilization values
+        cpuUtilPct = self.cpuUtilTask.getTelemetryValue()
+        memUtilPct = self.memUtilTask.getTelemetryValue()
+
+        # Log CPU and memory utilization
+        logging.debug('CPU utilization is %s percent, and memory utilization is %s percent.', str(cpuUtilPct),
+                      str(memUtilPct))
+
+    def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+        """
+        Sets the data message listener (not implemented in this version).
+
+        :param listener: The data message listener to be set.
+        :return: Always returns False in this version.
+        """
+        pass
+
+    def startManager(self):
+        """
+        Starts the SystemPerformanceManager if it is not already started.
+        """
+        logging.info("Starting SystemPerformanceManager...")
+
+        # Check if the scheduler is not running, then start it
+        if not self.scheduler.running:
+            self.scheduler.start()
+            logging.info("Started SystemPerformanceManager.")
+        else:
+            logging.warning("SystemPerformanceManager scheduler already started. Ignoring.")
+
+    def stopManager(self):
+        """
+        Stops the SystemPerformanceManager and shuts down the scheduler.
+        """
+        logging.info("Stopping SystemPerformanceManager...")
+
+        try:
+            # Shutdown the scheduler
+            self.scheduler.shutdown()
+            logging.info("Stopped SystemPerformanceManager.")
+        except:
+            logging.warning("SystemPerformanceManager scheduler already stopped. Ignoring.")
