@@ -22,11 +22,16 @@ from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuat
 
 class ActuatorAdapterManager(object):
 	"""
-	Shell representation of class for student implementation.
-	
-	"""
+    Represents a manager for handling actuators in a constrained device.
+    Inherits from object.
+    """
+
 	
 	def __init__(self, dataMsgListener: IDataMessageListener = None):
+		"""
+        Constructor for ActuatorAdapterManager class.
+        Initializes the ActuatorAdapterManager with configuration parameters and sets up actuators.
+        """
 		self.dataMsgListener = dataMsgListener
 		
 		self.configUtil = ConfigUtil()
@@ -50,20 +55,37 @@ class ActuatorAdapterManager(object):
 		
 		# see PIOT-CDA-03-007 description for thoughts on the next line of code
 		self._initEnvironmentalActuationTasks()
+
+		
 	
 	def _initEnvironmentalActuationTasks(self):
+		"""
+        Initializes environmental actuation tasks based on configuration parameters.
+        """
 		if not self.useEmulator:
-			# load the environmental tasks for simulated actuation
+		# load the environmental tasks for simulated actuation
 			self.humidifierActuator = HumidifierActuatorSimTask()
 			
 			# create the HVAC actuator
 			self.hvacActuator = HvacActuatorSimTask()
 	
 	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+		"""
+        Sets the data message listener for the ActuatorAdapterManager.
+        
+        @param listener: The data message listener to be set.
+        @return bool: True if listener is set successfully, False otherwise.
+        """
 		if listener:
 			self.dataMsgListener = listener
 
 	def sendActuatorCommand(self, data: ActuatorData) -> ActuatorData:
+		"""
+        Sends actuator command data to the corresponding actuator and returns the response data.
+        
+        @param data: The ActuatorData instance containing actuator command information.
+        @return ActuatorData: The response data from the actuator.
+        """
 		if data and not data.isResponseFlagEnabled():
 			# first check if the actuation event is destined for this device
 			if data.getLocationID() == self.locationID:
@@ -95,5 +117,11 @@ class ActuatorAdapterManager(object):
 		return None
 	
 	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+		"""
+        Sets the data message listener for the ActuatorAdapterManager.
+        
+        @param listener: The data message listener to be set.
+        @return bool: True if listener is set successfully, False otherwise.
+        """
 		if listener:
 			self.dataMsgListener = listener

@@ -12,15 +12,15 @@ from programmingtheiot.cda.sim.BaseActuatorSimTask import BaseActuatorSimTask
 
 class HumidifierActuatorSimTask(BaseActuatorSimTask):
 	"""
-	This is a simple wrapper for an Actuator abstraction - it provides
-	a container for the actuator's state, value, name, and status. A
-	command variable is also provided to instruct the actuator to
-	perform a specific function (in addition to setting a new value
-	via the 'val' parameter.
-	
-	"""
+    Represents a simple wrapper for a Humidifier Actuator simulation task.
+    Inherits from the BaseActuatorSimTask class.
+    """
 
 	def __init__(self):
+		"""
+        Constructor for HumidifierActuatorSimTask class.
+        Initializes the Humidifier actuator simulation task with specific parameters.
+        """
 		super( \
 			HumidifierActuatorSimTask, self).__init__( \
 				name = ConfigConst.HUMIDIFIER_ACTUATOR_NAME, \

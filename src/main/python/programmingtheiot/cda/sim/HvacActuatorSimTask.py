@@ -16,11 +16,15 @@ from programmingtheiot.cda.sim.BaseActuatorSimTask import BaseActuatorSimTask
 
 class HvacActuatorSimTask(BaseActuatorSimTask):
 	"""
-	Shell representation of class for student implementation.
-	
-	"""
+    Represents a simple wrapper for an HVAC Actuator simulation task.
+    Inherits from the BaseActuatorSimTask class.
+    """
 
 	def __init__(self):
+		"""
+        Constructor for HvacActuatorSimTask class.
+        Initializes the HVAC actuator simulation task with specific parameters.
+        """
 		super( \
 			HvacActuatorSimTask, self).__init__( \
 				name = ConfigConst.HVAC_ACTUATOR_NAME, \
