@@ -13,6 +13,8 @@ import random
 import programmingtheiot.common.ConfigConst as ConfigConst
 
 from programmingtheiot.data.ActuatorData import ActuatorData
+from pisense import SenseHAT
+
 
 class BaseActuatorSimTask():
 	"""
