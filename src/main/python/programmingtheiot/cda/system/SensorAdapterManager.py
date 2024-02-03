@@ -25,11 +25,15 @@ from programmingtheiot.cda.sim.PressureSensorSimTask import PressureSensorSimTas
 
 class SensorAdapterManager(object):
 	"""
-	Shell representation of class for student implementation.
-	
-	"""
+    Represents a manager for handling environmental sensor tasks in a constrained device.
+    Inherits from object.
+    """
 
 	def __init__(self):
+		"""
+        Constructor for SensorAdapterManager class.
+        Initializes the SensorAdapterManager with configuration parameters and sets up scheduler.
+        """
 		self.configUtil = ConfigUtil()
 	
 		self.pollRate     = \
@@ -62,6 +66,9 @@ class SensorAdapterManager(object):
 		self._initEnvironmentalSensorTasks()
 
 	def _initEnvironmentalSensorTasks(self):
+		"""
+        Initializes environmental sensor tasks based on configuration parameters.
+        """
 		humidityFloor   = \
 			self.configUtil.getFloat( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.HUMIDITY_SIM_FLOOR_KEY, defaultVal = SensorDataGenerator.LOW_NORMAL_ENV_HUMIDITY)
@@ -101,6 +108,9 @@ class SensorAdapterManager(object):
 			self.tempAdapter     = TemperatureSensorSimTask(dataSet = tempData)
 
 	def handleTelemetry(self):
+		"""
+        Generates telemetry data from sensor adapters and notifies the data message listener.
+        """
 		humidityData = self.humidityAdapter.generateTelemetry()
 		pressureData = self.pressureAdapter.generateTelemetry()
 		tempData     = self.tempAdapter.generateTelemetry()
@@ -119,10 +129,20 @@ class SensorAdapterManager(object):
 			self.dataMsgListener.handleSensorMessage(tempData)
 		
 	def setDataMessageListener(self, listener: IDataMessageListener) :
+		"""
+        Sets the data message listener for the SensorAdapterManager.
+        
+        @param listener: The data message listener to be set.
+        """
 		if listener:
 			self.dataMsgListener = listener
 	
 	def startManager(self) -> bool:
+		"""
+        Starts the SensorAdapterManager and the scheduler.
+        
+        @return bool: True if started successfully, False otherwise.
+        """
 		logging.info("Started SensorAdapterManager.")
 	
 		if not self.scheduler.running:
@@ -133,6 +153,10 @@ class SensorAdapterManager(object):
 			return False
 		
 	def stopManager(self) -> bool:
+		"""
+        Stop the SensorAdapterManager and the scheduler.
+        
+        """
 		logging.info("Stopped SensorAdapterManager.")
 	
 		try:

@@ -13,12 +13,15 @@ from programmingtheiot.cda.sim.BaseSensorSimTask import BaseSensorSimTask
 from programmingtheiot.cda.sim.SensorDataGenerator import SensorDataGenerator
 
 class HumiditySensorSimTask(BaseSensorSimTask):
-	"""
-	Shell representation of class for student implementation.
 	
-	"""
 
 	def __init__(self, dataSet = None):
+		"""
+        Constructor for HumiditySensorSimTask class.
+        Initializes the humidity sensor task with specific parameters.
+        
+        @param dataSet The data set for simulation (optional).
+        """
 		super( \
 			HumiditySensorSimTask, self).__init__( \
 			name = ConfigConst.HUMIDITY_SENSOR_NAME, \

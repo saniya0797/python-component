@@ -16,17 +16,22 @@ from programmingtheiot.data.SensorData import SensorData
 from programmingtheiot.cda.sim.SensorDataGenerator import SensorDataSet
 
 class BaseSensorSimTask():
-	"""
-	Shell representation of class for student implementation.
 	
-	"""
 	DEFAULT_MIN_VAL = ConfigConst.DEFAULT_VAL
 	DEFAULT_MAX_VAL = 100.0
 
-	#DEFAULT_MIN_VAL = 0.0
-	#DEFAULT_MAX_VAL = 1000.0
+	
 	
 	def __init__(self, name = ConfigConst.NOT_SET, typeID: int = ConfigConst.DEFAULT_SENSOR_TYPE, dataSet = None, minVal: float = DEFAULT_MIN_VAL, maxVal: float = DEFAULT_MAX_VAL):
+		"""
+        Constructor for BaseSensorSimTask class.
+        
+        @param name The name of the sensor task.
+        @param typeID The type ID of the sensor task.
+        @param dataSet The data set for simulation (optional).
+        @param minVal The minimum value for simulation (used when dataSet is not provided).
+        @param maxVal The maximum value for simulation (used when dataSet is not provided).
+        """
 		self.dataSet = dataSet
 		self.name = name
 		self.typeID = typeID
@@ -42,11 +47,11 @@ class BaseSensorSimTask():
 	
 	def generateTelemetry(self) -> SensorData:
 		"""
-		Implement basic logging and SensorData creation. Sensor-specific functionality
-		should be implemented by sub-class.
-		
-		A local reference to SensorData can be contained in this base class.
-		"""
+        Generates telemetry data for the sensor task.
+        Sensor-specific functionality should be implemented by a sub-class.
+        
+        @return SensorData The generated sensor data.
+        """
 		sensorData = SensorData(typeID = self.getTypeID(), name = self.getName())
 		sensorVal = ConfigConst.DEFAULT_VAL
 		
@@ -67,10 +72,11 @@ class BaseSensorSimTask():
 	
 	def getTelemetryValue(self) -> float:
 		"""
-		If a local reference to SensorData is not None, simply return its current value.
-		If SensorData hasn't yet been created, call self.generateTelemetry(), then return
-		its current value.
-		"""
+        Gets the telemetry value from the latest sensor data.
+        If the sensor data hasn't been created, calls self.generateTelemetry() first.
+        
+        @return float The current telemetry value.
+        """
 		if not self.latestSensorData:
 			self.generateTelemetry()
 		
@@ -78,13 +84,25 @@ class BaseSensorSimTask():
 	
 	def getLatestTelemetry(self) -> SensorData:
 		"""
-		This can return the current SensorData instance or a copy.
-		"""
+        Gets the current SensorData instance or a copy.
+        
+        @return SensorData The current sensor data.
+        """
 		pass
 	
 	def getName(self) -> str:
+		"""
+        Gets the name of the sensor task.
+        
+        @return str The name of the sensor task.
+        """
 		return self.name
 	
 	def getTypeID(self) -> int:
+		"""
+        Gets the type ID of the sensor task.
+        
+        @return int The type ID of the sensor task.
+        """
 		return self.typeID
 	
