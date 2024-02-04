@@ -15,15 +15,6 @@ from programmingtheiot.common.ConfigUtil import ConfigUtil
 from programmingtheiot.cda.sim.BaseSensorSimTask import BaseSensorSimTask
 
 from pisense import SenseHAT
-
-class HumiditySensorEmulatorTask(BaseSensorSimTask):
-	"""
-	Shell representation of class for student implementation.
-	
-	"""
-
-	from programmingtheiot.data.SensorData import SensorData
-
 import programmingtheiot.common.ConfigConst as ConfigConst
 
 from programmingtheiot.common.ConfigUtil import ConfigUtil
@@ -34,6 +25,12 @@ from pisense import SenseHAT
 class HumiditySensorEmulatorTask(BaseSensorSimTask):
 
 	def __init__(self):
+		"""
+        Initializes the HumiditySensorEmulatorTask object.
+
+        This constructor calls the constructor of the parent class (BaseSensorSimTask)
+        and sets up the SenseHAT emulator based on the configuration.
+        """
 		super( \
 			HumiditySensorEmulatorTask, self).__init__( \
 				name = ConfigConst.HUMIDITY_SENSOR_NAME, \
@@ -46,6 +43,12 @@ class HumiditySensorEmulatorTask(BaseSensorSimTask):
 		self.sh = SenseHAT(emulate = enableEmulation)
 	
 	def generateTelemetry(self) -> SensorData:
+		"""
+        Generates telemetry data for the Humidity Sensor.
+
+        Returns:
+            SensorData: A SensorData instance containing the generated telemetry data.
+        """
 		sensorData = SensorData(name = self.getName(), typeID = self.getTypeID())
 		sensorVal = self.sh.environ.humidity
 				

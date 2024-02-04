@@ -19,12 +19,15 @@ from programmingtheiot.cda.sim.BaseActuatorSimTask import BaseActuatorSimTask
 from pisense import SenseHAT
 
 class HumidifierEmulatorTask(BaseActuatorSimTask):
-	"""
-	Shell representation of class for student implementation.
 	
-	"""
 
 	def __init__(self):
+		"""
+        Initializes the HumidifierEmulatorTask object.
+
+        This constructor calls the constructor of the parent class (BaseActuatorSimTask)
+        and sets up the SenseHAT emulator based on the configuration.
+        """
 		super( \
 			HumidifierEmulatorTask, self).__init__( \
 				name = ConfigConst.HUMIDIFIER_ACTUATOR_NAME, \
@@ -38,6 +41,14 @@ class HumidifierEmulatorTask(BaseActuatorSimTask):
 		self.sh = SenseHAT(emulate = enableEmulation)
 
 	def _activateActuator(self, val: float = ConfigConst.DEFAULT_VAL, stateData: str = None) -> int:
+		"""
+        Activates the Humidifier and scrolls a message on the SenseHAT LED screen.
+        Args:
+            val (float): The activation value, not used in this implementation.
+            stateData (str): Additional state data, not used in this implementation.
+        Returns:
+            int: Returns 0 if the activation is successful, -1 otherwise.
+        """
 		if self.sh.screen:
 			msg = self.getSimpleName() 
 			self.sh.screen.scroll_text(msg)
@@ -47,6 +58,14 @@ class HumidifierEmulatorTask(BaseActuatorSimTask):
 			return -1
 
 	def _deactivateActuator(self, val: float = ConfigConst.DEFAULT_VAL, stateData: str = None) -> int:
+		"""
+        Deactivates the Humidifier, scrolls a message, and clears the SenseHAT LED screen.
+        Args:
+            val (float): The deactivation value, not used in this implementation.
+            stateData (str): Additional state data, not used in this implementation.
+        Returns:
+            int: Returns 0 if the deactivation is successful, -1 otherwise.
+        """
 		if self.sh.screen:
 			msg = self.getSimpleName() 
 			self.sh.screen.scroll_text(msg)
