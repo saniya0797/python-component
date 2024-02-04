@@ -49,7 +49,6 @@ class ActuatorAdapterManager(object):
 		self.hvacActuator       = None
 		self.ledDisplayActuator = None
 		
-		# see PIOT-CDA-03-007 description for thoughts on the next line of code
 		self._initEnvironmentalActuationTasks()
 	
 	def _initEnvironmentalActuationTasks(self):
@@ -57,10 +56,8 @@ class ActuatorAdapterManager(object):
         Initializes environmental actuation tasks based on configuration.
         """
 		if not self.useEmulator:
-			# load the environmental tasks for simulated actuation
 			self.humidifierActuator = HumidifierActuatorSimTask()
 			
-			# create the HVAC actuator
 			self.hvacActuator = HvacActuatorSimTask()
 		else:
 			hueModule = import_module('programmingtheiot.cda.emulated.HumidifierEmulatorTask', 'HumidiferEmulatorTask')
@@ -102,7 +99,6 @@ class ActuatorAdapterManager(object):
             ActuatorData: An instance of ActuatorData representing the actuator response.
         """
 		if data and not data.isResponseFlagEnabled():
-			# first check if the actuation event is destined for this device
 			if data.getLocationID() == self.locationID:
 				logging.info("Actuator command received for location ID %s. Processing...", str(data.getLocationID()))
 				

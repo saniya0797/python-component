@@ -15,13 +15,11 @@ from programmingtheiot.cda.system.ActuatorAdapterManager import ActuatorAdapterM
 from programmingtheiot.cda.system.SensorAdapterManager import SensorAdapterManager
 from programmingtheiot.cda.system.SystemPerformanceManager import SystemPerformanceManager
 
-import programmingtheiot.common.ConfigConst as ConfigConst
-
-from programmingtheiot.common.ConfigUtil import ConfigUtil
 from programmingtheiot.common.IDataMessageListener import IDataMessageListener
+from programmingtheiot.common.ISystemPerformanceDataListener import ISystemPerformanceDataListener
+from programmingtheiot.common.ITelemetryDataListener import ITelemetryDataListener
 from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
 
-from programmingtheiot.data.DataUtil import DataUtil
 from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.data.SensorData import SensorData
 from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
@@ -43,20 +41,15 @@ from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.data.SensorData import SensorData
 from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
 
-from programmingtheiot.common.IDataMessageListener import IDataMessageListener
-from programmingtheiot.common.ISystemPerformanceDataListener import ISystemPerformanceDataListener
-from programmingtheiot.common.ITelemetryDataListener import ITelemetryDataListener
-from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
-
-from programmingtheiot.data.ActuatorData import ActuatorData
-from programmingtheiot.data.SensorData import SensorData
-from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
-
 class DeviceDataManager(IDataMessageListener):
+	"""
+        Constructor for DeviceDataManager class.
+        Initializes configuration settings and managers based on configuration parameters.
+    """
 	
 	def __init__(self):
 		self.configUtil = ConfigUtil()
-	
+		
 		self.enableSystemPerf   = \
 			self.configUtil.getBoolean( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_SYSTEM_PERF_KEY)
@@ -129,7 +122,24 @@ class DeviceDataManager(IDataMessageListener):
 		@return SystemPerformanceData
 		"""
 		pass
-	
+
+	def handleActuatorCommandMessage(self, data: ActuatorData = None) -> ActuatorData:
+		"""
+		This callback method will be invoked by the connection that's handling
+		an incoming ActuatorData command message.
+		
+		@param data The incoming ActuatorData command message.
+		@return Actuatordata
+		"""
+		logging.info("Actuator data: " + str(data))
+		
+		if data:
+			logging.info("Processing actuator command message.")
+			return self.actuatorAdapterMgr.sendActuatorCommand(data)
+		else:
+			logging.warning("Incoming actuator command is invalid (null). Ignoring.")
+			return None
+		
 	def handleActuatorCommandMessage(self, data: ActuatorData) -> bool:
 		"""
 		This callback method will be invoked by the connection that's handling
@@ -138,24 +148,16 @@ class DeviceDataManager(IDataMessageListener):
 		@param data The incoming ActuatorData command message.
 		@return boolean
 		"""
-		logging.info("Actuator data: " + str(data))
+		pass
 	
-		if data:
-			logging.info("Processing actuator command message.")
-			return self.actuatorAdapterMgr.sendActuatorCommand(data)
-		else:
-			logging.warning("Incoming actuator command is invalid (null). Ignoring.")
-			return None
-	
-	def handleActuatorCommandResponse(self, data: ActuatorData ) -> bool:
+	def handleActuatorCommandResponse(self, data: ActuatorData = None) -> bool:
 		"""
-		This callback method will be invoked by the actuator manager that just
-		processed an ActuatorData command, which creates a new ActuatorData
-		instance and sets it as a response before calling this method.
-		
-		@param data The incoming ActuatorData response message.
-		@return boolean
-		"""
+        Handles incoming actuator command response messages.
+        Stores the data in the cache and delegates to the upstream transmission function.
+        
+        @param data The incoming ActuatorData response message.
+        @return boolean
+        """
 		if data:
 			logging.debug("Incoming actuator response received (from actuator manager): " + str(data))
 			
@@ -184,17 +186,15 @@ class DeviceDataManager(IDataMessageListener):
 		@param data The incoming JSON message.
 		@return boolean
 		"""
-		
+		pass
 	
-	def handleSensorMessage(self, data: SensorData) -> bool:
+	def handleSensorMessage(self, data: SensorData = None) -> bool:
 		"""
-		This callback method will be invoked by the sensor manager that just processed
-		a new sensor reading, which creates a new SensorData instance that will be
-		passed to this method.
-		
-		@param data The incoming SensorData message.
-		@return boolean
-		"""
+        Handles incoming sensor data messages and performs data analysis.
+        
+        @param data The incoming SensorData message.
+        @return boolean
+        """
 		if data:
 			logging.debug("Incoming sensor data received (from sensor manager): " + str(data))
 			self._handleSensorDataAnalysis(data)
@@ -203,15 +203,13 @@ class DeviceDataManager(IDataMessageListener):
 			logging.warning("Incoming sensor data is invalid (null). Ignoring.")
 			return False
 	
-	def handleSystemPerformanceMessage(self, data: SystemPerformanceData) -> bool:
+	def handleSystemPerformanceMessage(self, data: SystemPerformanceData = None) -> bool:
 		"""
-		This callback method will be invoked by the system performance manager that just
-		processed a new sensor reading, which creates a new SystemPerformanceData instance
-		that will be passed to this method.
-		
-		@param data The incoming SystemPerformanceData message.
-		@return boolean
-		"""
+        Handles incoming system performance messages.
+        
+        @param data The incoming SystemPerformanceData message.
+        @return boolean
+        """
 		if data:
 			logging.debug("Incoming system performance message received (from sys perf manager): " + str(data))
 			return True
@@ -220,12 +218,26 @@ class DeviceDataManager(IDataMessageListener):
 			return False
 	
 	def setSystemPerformanceDataListener(self, listener: ISystemPerformanceDataListener = None):
+		"""
+        Sets the listener for system performance data.
+        
+        @param listener The system performance data listener.
+        """
 		pass
 			
 	def setTelemetryDataListener(self, name: str = None, listener: ITelemetryDataListener = None):
+		"""
+        Sets the telemetry data listener.
+        
+        @param name The name of the telemetry data listener.
+        @param listener The telemetry data listener.
+        """
 		pass
 			
 	def startManager(self):
+		"""
+        Starts the DeviceDataManager, including the system performance manager and sensor adapter manager.
+        """
 		logging.info("Starting DeviceDataManager...")
 	
 		if self.sysPerfMgr:
@@ -237,6 +249,9 @@ class DeviceDataManager(IDataMessageListener):
 		logging.info("Started DeviceDataManager.")
 		
 	def stopManager(self):
+		"""
+        Stops the DeviceDataManager, including the system performance manager and sensor adapter manager.
+        """
 		logging.info("Stopping DeviceDataManager...")
 	
 		if self.sysPerfMgr:
@@ -257,15 +272,10 @@ class DeviceDataManager(IDataMessageListener):
 		"""
 		pass
 		
-	def _handleSensorDataAnalysis(self, data: SensorData):
+	def _handleSensorDataAnalysis(self, resource = None, data: SensorData = None):
 		"""
-		Call this from handleSensorMessage() to determine if there's
-		any action to take on the message. Steps to take:
-		1) Check config: Is there a rule or flag that requires immediate processing of data?
-		2) Act on data: If # 1 is true, determine what - if any - action is required, and execute.
-		"""
-		logging.info("Handle sensor data analysis.")
-
+        Handles incoming data analysis for Sensordata.
+        """
 		if self.handleTempChangeOnDevice and data.getTypeID() == ConfigConst.TEMP_SENSOR_TYPE:
 			logging.info("Handle temp change: %s - type ID: %s", str(self.handleTempChangeOnDevice), str(data.getTypeID()))
 			
