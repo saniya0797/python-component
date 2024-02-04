@@ -21,12 +21,13 @@ from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
 
 class ActuatorAdapterManager(object):
-	"""
-	Shell representation of class for student implementation.
-	
-	"""
 	
 	def __init__(self, dataMsgListener: IDataMessageListener = None):
+		"""
+        Initializes the ActuatorAdapterManager object.
+
+        This constructor sets up configuration and initializes environmental actuation tasks.
+        """
 		self.dataMsgListener = dataMsgListener
 		self.useEmulator = True
 		self.configUtil = ConfigUtil()
@@ -52,6 +53,9 @@ class ActuatorAdapterManager(object):
 		self._initEnvironmentalActuationTasks()
 	
 	def _initEnvironmentalActuationTasks(self):
+		"""
+        Initializes environmental actuation tasks based on configuration.
+        """
 		if not self.useEmulator:
 			# load the environmental tasks for simulated actuation
 			self.humidifierActuator = HumidifierActuatorSimTask()
@@ -75,10 +79,28 @@ class ActuatorAdapterManager(object):
 
 	
 	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+		"""
+        Sets the data message listener for handling actuation messages.
+
+        Args:
+            listener (IDataMessageListener): An instance of the IDataMessageListener.
+
+        Returns:
+            bool: True if the listener is set successfully, False otherwise.
+        """
 		if listener:
 			self.dataMsgListener = listener
 
 	def sendActuatorCommand(self, data: ActuatorData) -> ActuatorData:
+		"""
+        Sends an actuator command and processes the actuation event.
+
+        Args:
+            data (ActuatorData): An instance of ActuatorData representing the actuator command.
+
+        Returns:
+            ActuatorData: An instance of ActuatorData representing the actuator response.
+        """
 		if data and not data.isResponseFlagEnabled():
 			# first check if the actuation event is destined for this device
 			if data.getLocationID() == self.locationID:
@@ -87,7 +109,6 @@ class ActuatorAdapterManager(object):
 				aType = data.getTypeID()
 				responseData = None
 				
-				# TODO: implement appropriate logging and error handling
 				if aType == ConfigConst.HUMIDIFIER_ACTUATOR_TYPE and self.humidifierActuator:
 					responseData = self.humidifierActuator.updateActuator(data)
 				elif aType == ConfigConst.HVAC_ACTUATOR_TYPE and self.hvacActuator:
@@ -97,9 +118,7 @@ class ActuatorAdapterManager(object):
 				else:
 					logging.warning("No valid actuator type. Ignoring actuation for type: %s", data.getTypeID())
 					
-				# TODO: in a later lab module, the responseData instance will be
-				# passed to a callback function implemented in DeviceDataManager
-				# via IDataMessageListener
+				
 
 				return responseData
 			else:
@@ -110,5 +129,14 @@ class ActuatorAdapterManager(object):
 		return None
 	
 	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+		"""
+        Sets the data message listener for handling actuation messages.
+
+        Args:
+            listener (IDataMessageListener): An instance of the IDataMessageListener.
+
+        Returns:
+            bool: True if the listener is set successfully, False otherwise.
+        """
 		if listener:
 			self.dataMsgListener = listener

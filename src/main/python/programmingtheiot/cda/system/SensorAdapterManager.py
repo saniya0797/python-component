@@ -24,12 +24,13 @@ from programmingtheiot.cda.sim.TemperatureSensorSimTask import TemperatureSensor
 from programmingtheiot.cda.sim.PressureSensorSimTask import PressureSensorSimTask
 
 class SensorAdapterManager(object):
-	"""
-	Shell representation of class for student implementation.
 	
-	"""
-
 	def __init__(self):
+		"""
+        Initializes the SensorAdapterManager object.
+
+        This constructor sets up configuration, initializes the scheduler, and initializes environmental sensor tasks.
+        """
 		self.configUtil = ConfigUtil()
 		self.useEmulator = True
 		self.pollRate     = \
@@ -58,10 +59,12 @@ class SensorAdapterManager(object):
 		self.pressureAdapter = None
 		self.tempAdapter     = None
 
-		# see PIOT-CDA-03-006 description for thoughts on the next line of code
 		self._initEnvironmentalSensorTasks()
 
 	def _initEnvironmentalSensorTasks(self):
+		"""
+        Initializes environmental sensor tasks based on configuration.
+        """
 		humidityFloor   = \
 			self.configUtil.getFloat( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.HUMIDITY_SIM_FLOOR_KEY, defaultVal = SensorDataGenerator.LOW_NORMAL_ENV_HUMIDITY)
@@ -114,6 +117,9 @@ class SensorAdapterManager(object):
 			self.tempAdapter = teClazz()
 
 	def handleTelemetry(self):
+		"""
+        Handles telemetry data from humidity, pressure, and temperature sensors.
+        """
 		humidityData = self.humidityAdapter.generateTelemetry()
 		pressureData = self.pressureAdapter.generateTelemetry()
 		tempData     = self.tempAdapter.generateTelemetry()

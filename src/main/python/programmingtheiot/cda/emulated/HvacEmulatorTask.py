@@ -25,6 +25,12 @@ class HvacEmulatorTask(BaseActuatorSimTask):
 	"""
 
 	def __init__(self):
+		"""
+        Initializes the HvacEmulatorTask object.
+
+        This constructor calls the constructor of the parent class (BaseActuatorSimTask)
+        and sets up the SenseHAT emulator based on the configuration.
+        """
 		super( \
 			HvacEmulatorTask, self).__init__( \
 				name = ConfigConst.HVAC_ACTUATOR_NAME, \
@@ -37,6 +43,16 @@ class HvacEmulatorTask(BaseActuatorSimTask):
 		self.sh = SenseHAT(emulate = enableEmulation)
 
 	def _activateActuator(self, val: float = ConfigConst.DEFAULT_VAL, stateData: str = None) -> int:
+		"""
+        Emulates the activation of the HVAC actuator by scrolling a message on the SenseHAT LED screen.
+
+        Args:
+            val (float): The activation value to process.
+            stateData (str): The string state data to use in processing the command.
+
+        Returns:
+            int: The status code indicating the result of the activation.
+        """
 		if self.sh.screen:
 			msg = self.getSimpleName() 
 			self.sh.screen.scroll_text(msg)
@@ -46,6 +62,16 @@ class HvacEmulatorTask(BaseActuatorSimTask):
 			return -1
 
 	def _deactivateActuator(self, val: float = ConfigConst.DEFAULT_VAL, stateData: str = None) -> int:
+		"""
+        Emulates the deactivation of the HVAC actuator by scrolling a message on the SenseHAT LED screen.
+
+        Args:
+            val (float): The activation value to process.
+            stateData (str): The string state data to use in processing the command.
+
+        Returns:
+            int: The status code indicating the result of the deactivation.
+        """
 		if self.sh.screen:
 			msg = self.getSimpleName() 
 			self.sh.screen.scroll_text(msg)

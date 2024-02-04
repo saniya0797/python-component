@@ -17,11 +17,15 @@ from programmingtheiot.cda.sim.BaseSensorSimTask import BaseSensorSimTask
 from pisense import SenseHAT
 
 class PressureSensorEmulatorTask(BaseSensorSimTask):
-	"""
-	Shell representation of class for student implementation.
 	
-	"""
+	
 	def __init__(self):
+		"""
+        Initializes the PressureSensorEmulatorTask object.
+
+        This constructor calls the constructor of the parent class (BaseSensorSimTask)
+        and sets up the SenseHAT emulator based on the configuration.
+        """
 		super( \
 			PressureSensorEmulatorTask, self).__init__( \
 				name = ConfigConst.PRESSURE_SENSOR_NAME, \
@@ -34,6 +38,12 @@ class PressureSensorEmulatorTask(BaseSensorSimTask):
 		self.sh = SenseHAT(emulate = enableEmulation)
 	
 	def generateTelemetry(self) -> SensorData:
+		"""
+        Emulates generating telemetry data for the Pressure Sensor.
+
+        Returns:
+            SensorData: The generated SensorData instance representing the telemetry data.
+        """
 		sensorData = SensorData(name = self.getName() , typeID = self.getTypeID())
 		sensorVal = self.sh.environ.pressure
 				
