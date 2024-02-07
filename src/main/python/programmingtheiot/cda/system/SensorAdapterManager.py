@@ -14,7 +14,7 @@ from importlib import import_module
 from apscheduler.schedulers.background import BackgroundScheduler
 
 import programmingtheiot.common.ConfigConst as ConfigConst
-
+from importlib import import_module
 from programmingtheiot.common.ConfigUtil import ConfigUtil
 from programmingtheiot.common.IDataMessageListener import IDataMessageListener
 
@@ -24,18 +24,15 @@ from programmingtheiot.cda.sim.TemperatureSensorSimTask import TemperatureSensor
 from programmingtheiot.cda.sim.PressureSensorSimTask import PressureSensorSimTask
 
 class SensorAdapterManager(object):
-	"""
-    Represents a manager for handling environmental sensor tasks in a constrained device.
-    Inherits from object.
-    """
-
+	
 	def __init__(self):
 		"""
-        Constructor for SensorAdapterManager class.
-        Initializes the SensorAdapterManager with configuration parameters and sets up scheduler.
+        Initializes the SensorAdapterManager object.
+
+        This constructor sets up configuration, initializes the scheduler, and initializes environmental sensor tasks.
         """
 		self.configUtil = ConfigUtil()
-	
+		self.useEmulator = True
 		self.pollRate     = \
 			self.configUtil.getInteger( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.POLL_CYCLES_KEY, defaultVal = ConfigConst.DEFAULT_POLL_CYCLES)
@@ -62,12 +59,11 @@ class SensorAdapterManager(object):
 		self.pressureAdapter = None
 		self.tempAdapter     = None
 
-		# see PIOT-CDA-03-006 description for thoughts on the next line of code
 		self._initEnvironmentalSensorTasks()
 
 	def _initEnvironmentalSensorTasks(self):
 		"""
-        Initializes environmental sensor tasks based on configuration parameters.
+        Initializes environmental sensor tasks based on configuration.
         """
 		humidityFloor   = \
 			self.configUtil.getFloat( \
@@ -81,7 +77,7 @@ class SensorAdapterManager(object):
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.PRESSURE_SIM_FLOOR_KEY, defaultVal = SensorDataGenerator.LOW_NORMAL_ENV_PRESSURE)
 		pressureCeiling = \
 			self.configUtil.getFloat( \
-				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.PRESSURE_SIM_CEILING_KEY, defaultVal = SensorDataGenerator.HI_NORMAL_ENV_PRESSURE)
+				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.PRESSURE_SIM_CEILING_KEY, defaultVal = SensorDataGenerator.LOW_NORMAL_ENV_PRESSURE)
 		
 		tempFloor       = \
 			self.configUtil.getFloat( \
@@ -107,9 +103,22 @@ class SensorAdapterManager(object):
 			self.pressureAdapter = PressureSensorSimTask(dataSet = pressureData)
 			self.tempAdapter     = TemperatureSensorSimTask(dataSet = tempData)
 
+		else:
+			heModule = import_module('programmingtheiot.cda.emulated.HumiditySensorEmulatorTask', 'HumiditySensorEmulatorTask')
+			heClazz = getattr(heModule, 'HumiditySensorEmulatorTask')
+			self.humidityAdapter = heClazz()
+			
+			peModule = import_module('programmingtheiot.cda.emulated.PressureSensorEmulatorTask', 'PressureSensorEmulatorTask')
+			peClazz = getattr(peModule, 'PressureSensorEmulatorTask')
+			self.pressureAdapter = peClazz()
+			
+			teModule = import_module('programmingtheiot.cda.emulated.TemperatureSensorEmulatorTask', 'TemperatureSensorEmulatorTask')
+			teClazz = getattr(teModule, 'TemperatureSensorEmulatorTask')
+			self.tempAdapter = teClazz()
+
 	def handleTelemetry(self):
 		"""
-        Generates telemetry data from sensor adapters and notifies the data message listener.
+        Handles telemetry data from humidity, pressure, and temperature sensors.
         """
 		humidityData = self.humidityAdapter.generateTelemetry()
 		pressureData = self.pressureAdapter.generateTelemetry()
@@ -129,20 +138,10 @@ class SensorAdapterManager(object):
 			self.dataMsgListener.handleSensorMessage(tempData)
 		
 	def setDataMessageListener(self, listener: IDataMessageListener) :
-		"""
-        Sets the data message listener for the SensorAdapterManager.
-        
-        @param listener: The data message listener to be set.
-        """
 		if listener:
 			self.dataMsgListener = listener
 	
 	def startManager(self) -> bool:
-		"""
-        Starts the SensorAdapterManager and the scheduler.
-        
-        @return bool: True if started successfully, False otherwise.
-        """
 		logging.info("Started SensorAdapterManager.")
 	
 		if not self.scheduler.running:
@@ -153,10 +152,6 @@ class SensorAdapterManager(object):
 			return False
 		
 	def stopManager(self) -> bool:
-		"""
-        Stop the SensorAdapterManager and the scheduler.
-        
-        """
 		logging.info("Stopped SensorAdapterManager.")
 	
 		try:
