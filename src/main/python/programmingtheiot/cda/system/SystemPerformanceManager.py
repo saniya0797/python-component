@@ -66,21 +66,25 @@ class SystemPerformanceManager(object):
         """
         Handles telemetry by retrieving and logging CPU and memory utilization.
         """
-        # Retrieve CPU and memory utilization values
         cpuUtilPct = self.cpuUtilTask.getTelemetryValue()
         memUtilPct = self.memUtilTask.getTelemetryValue()
-
-        # Log CPU and memory utilization
-        logging.debug('CPU utilization is %s percent, and memory utilization is %s percent.', str(cpuUtilPct),
-                      str(memUtilPct))
+        # Retrieve CPU and memory utilization values
+        self.cpuUtilPct = self.cpuUtilTask.getTelemetryValue()
+        self.memUtilPct = self.memUtilTask.getTelemetryValue()
+        
+        logging.debug('CPU utilization is %s percent, and memory utilization is %s percent.', str(cpuUtilPct), str(memUtilPct))
+        
+        sysPerfData = SystemPerformanceData()
+        sysPerfData.setLocationID(self.locationID)
+        sysPerfData.setCpuUtilization(self.cpuUtilPct)
+        sysPerfData.setMemoryUtilization(self.memUtilPct)
+        
+        if self.dataMsgListener:
+            self.dataMsgListener.handleSystemPerformanceMessage(data = sysPerfData)
 
     def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
-        """
-        Sets the data message listener (not implemented in this version).
-
-        :param listener: The data message listener to be set.
-        :return: Always returns False in this version.
-        """
+        if listener:
+            self.dataMsgListener = listener
         pass
 
     def startManager(self):
