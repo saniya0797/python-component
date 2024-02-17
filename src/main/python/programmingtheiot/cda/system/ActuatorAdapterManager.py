@@ -29,7 +29,9 @@ class ActuatorAdapterManager(object):
         This constructor sets up configuration and initializes environmental actuation tasks.
         """
 		self.dataMsgListener = dataMsgListener
-	
+
+		self.useEmulator = True
+
 		self.configUtil = ConfigUtil()
 		
 		self.useSimulator = \
@@ -56,11 +58,29 @@ class ActuatorAdapterManager(object):
         Initializes environmental actuation tasks based on configuration.
         """
 		if not self.useEmulator:
-		# load the environmental tasks for simulated actuation
 			self.humidifierActuator = HumidifierActuatorSimTask()
+
 		
 		# create the HVAC actuator
 			self.hvacActuator = HvacActuatorSimTask()
+
+			
+			self.hvacActuator = HvacActuatorSimTask()
+		else:
+			hueModule = import_module('programmingtheiot.cda.emulated.HumidifierEmulatorTask', 'HumidiferEmulatorTask')
+			hueClazz = getattr(hueModule, 'HumidifierEmulatorTask')
+			self.humidifierActuator = hueClazz()
+			
+			# create the HVAC actuator emulator
+			hveModule = import_module('programmingtheiot.cda.emulated.HvacEmulatorTask', 'HvacEmulatorTask')
+			hveClazz = getattr(hveModule, 'HvacEmulatorTask')
+			self.hvacActuator = hveClazz()
+			
+			# create the LED display actuator emulator
+			leDisplayModule = import_module('programmingtheiot.cda.emulated.LedDisplayEmulatorTask', 'LedDisplayEmulatorTask')
+			leClazz = getattr(leDisplayModule, 'LedDisplayEmulatorTask')
+			self.ledDisplayActuator = leClazz()
+
 
 	
 	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
@@ -112,4 +132,17 @@ class ActuatorAdapterManager(object):
 		
 		return None
 	
-	
+
+	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+		"""
+        Sets the data message listener for handling actuation messages.
+
+        Args:
+            listener (IDataMessageListener): An instance of the IDataMessageListener.
+
+        Returns:
+            bool: True if the listener is set successfully, False otherwise.
+        """
+		if listener:
+			self.dataMsgListener = listener
+

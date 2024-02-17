@@ -86,6 +86,7 @@ class SystemPerformanceManager(object):
         if listener:
             self.dataMsgListener = listener
 
+
     def startManager(self):
         """
         Starts the SystemPerformanceManager if it is not already started.
