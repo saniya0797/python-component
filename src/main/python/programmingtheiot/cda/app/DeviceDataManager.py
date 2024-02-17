@@ -22,6 +22,7 @@ from programmingtheiot.common.IDataMessageListener import IDataMessageListener
 from programmingtheiot.common.ISystemPerformanceDataListener import ISystemPerformanceDataListener
 from programmingtheiot.common.ITelemetryDataListener import ITelemetryDataListener
 from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
+from programmingtheiot.cda.connection.RedisPersistenceAdapter import RedisPersistenceAdapter
  
 from programmingtheiot.data.DataUtil import DataUtil
 from programmingtheiot.data.ActuatorData import ActuatorData
@@ -54,6 +55,10 @@ class DeviceDataManager(IDataMessageListener):
 		self.sysPerfMgr = None
 		self.sensorAdapterMgr = None
 		self.actuatorAdapterMgr = None
+		self.redisClient = RedisPersistenceAdapter()
+
+        # Boolean flag to enable or disable storage to Redis
+		self.enableRedisStorage = True 
 		# Configure managers based on flags
 		if self.enableSystemPerf:
 			self.sysPerfMgr = SystemPerformanceManager()
@@ -189,6 +194,8 @@ class DeviceDataManager(IDataMessageListener):
 		pass
 	def startManager(self):
 		logging.info("Starting DeviceDataManager...")
+		self.redisClient.connectClient()
+
 		if self.sysPerfMgr:
 			self.sysPerfMgr.startManager()
 		if self.sensorAdapterMgr:
@@ -197,6 +204,8 @@ class DeviceDataManager(IDataMessageListener):
 		pass
 	def stopManager(self):
 		logging.info("Stopping DeviceDataManager...")
+		self.redisClient.disconnectClient()
+
 		if self.sysPerfMgr:
 			self.sysPerfMgr.stopManager()
 		if self.sensorAdapterMgr:
@@ -219,21 +228,23 @@ class DeviceDataManager(IDataMessageListener):
 		1) Check config: Is there a rule or flag that requires immediate processing of data?
 		2) Act on data: If # 1 is true, determine what - if any - action is required, and execute.
 		"""
- 
+		
 		logging.info("Handling sensor data: " + str(data))
-		if self.handleTempChangeOnDevice and data.getTypeID() == ConfigConst.TEMP_SENSOR_TYPE:
-			ad = ActuatorData(typeID=ConfigConst.HVAC_ACTUATOR_TYPE)
-			if data.getValue() > self.triggerHvacTempCeiling:
-				ad.setCommand(ConfigConst.COMMAND_ON)
-				ad.setValue(self.triggerHvacTempCeiling)
-			elif data.getValue() < self.triggerHvacTempFloor:
-				ad.setCommand(ConfigConst.COMMAND_ON)
-				ad.setValue(self.triggerHvacTempFloor)
-			else:
-				ad.setCommand(ConfigConst.COMMAND_OFF)
-			# Send actuator command to manager
-			self.handleActuatorCommandMessage(ad)
-		pass
+		if self.enableRedisStorage:
+			self.redisClient.storeData(sensorData.getResource(), sensorData)
+			if self.handleTempChangeOnDevice and data.getTypeID() == ConfigConst.TEMP_SENSOR_TYPE:
+				ad = ActuatorData(typeID=ConfigConst.HVAC_ACTUATOR_TYPE)
+				if data.getValue() > self.triggerHvacTempCeiling:
+					ad.setCommand(ConfigConst.COMMAND_ON)
+					ad.setValue(self.triggerHvacTempCeiling)
+				elif data.getValue() < self.triggerHvacTempFloor:
+					ad.setCommand(ConfigConst.COMMAND_ON)
+					ad.setValue(self.triggerHvacTempFloor)
+				else:
+					ad.setCommand(ConfigConst.COMMAND_OFF)
+				# Send actuator command to manager
+				self.handleActuatorCommandMessage(ad)
+			pass
 	def _handleUpstreamTransmission(self, resourceName: ResourceNameEnum, msg: str):
 		"""
 		Call this from handleActuatorCommandResponse(), handlesensorMessage(), and handleSystemPerformanceMessage()
