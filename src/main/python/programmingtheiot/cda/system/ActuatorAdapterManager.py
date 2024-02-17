@@ -29,7 +29,9 @@ class ActuatorAdapterManager(object):
         This constructor sets up configuration and initializes environmental actuation tasks.
         """
 		self.dataMsgListener = dataMsgListener
+
 		self.useEmulator = True
+
 		self.configUtil = ConfigUtil()
 		
 		self.useSimulator = \
@@ -57,6 +59,11 @@ class ActuatorAdapterManager(object):
         """
 		if not self.useEmulator:
 			self.humidifierActuator = HumidifierActuatorSimTask()
+
+		
+		# create the HVAC actuator
+			self.hvacActuator = HvacActuatorSimTask()
+
 			
 			self.hvacActuator = HvacActuatorSimTask()
 		else:
@@ -73,6 +80,7 @@ class ActuatorAdapterManager(object):
 			leDisplayModule = import_module('programmingtheiot.cda.emulated.LedDisplayEmulatorTask', 'LedDisplayEmulatorTask')
 			leClazz = getattr(leDisplayModule, 'LedDisplayEmulatorTask')
 			self.ledDisplayActuator = leClazz()
+
 
 	
 	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
@@ -124,6 +132,7 @@ class ActuatorAdapterManager(object):
 		
 		return None
 	
+
 	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
 		"""
         Sets the data message listener for handling actuation messages.
@@ -136,3 +145,4 @@ class ActuatorAdapterManager(object):
         """
 		if listener:
 			self.dataMsgListener = listener
+

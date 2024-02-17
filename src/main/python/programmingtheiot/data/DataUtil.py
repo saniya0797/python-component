@@ -36,6 +36,22 @@ class DataUtil():
 		jsonData = self._generateJsonData(obj = data, useDecForFloat = False)
 		return jsonData
 	
+	def sensorDataToJson(self, data: SensorData = None,useDecForFloat: bool = False):
+		if not data:
+			logging.debug("SensorData is null. Returning empty string.")
+			return ""
+		
+		jsonData = self._generateJsonData(obj = data, useDecForFloat = False)
+		return jsonData
+
+	def systemPerformanceDataToJson(self, data: SystemPerformanceData = None, useDecForFloat: bool = False):
+		if not data:
+			logging.debug("systemPerformanceData is null. Returning empty string.")
+			return ""
+		
+		jsonData = self._generateJsonData(obj = data, useDecForFloat = False)
+		return jsonData
+	
 	def jsonToActuatorData(self, jsonData: str = None, useDecForFloat: bool = False):
 		if not jsonData:
 			logging.warning("JSON data is empty or null. Returning null.")
@@ -45,7 +61,6 @@ class DataUtil():
 		ad = ActuatorData()
 		self._updateIotData(jsonStruct, ad)
 		return ad
-	
 	def _formatDataAndLoadDictionary(self, jsonData: str, useDecForFloat: bool = False) -> dict:
 		jsonData = jsonData.replace("\'", "\"").replace('False', 'false').replace('True', 'true')
 		
@@ -57,7 +72,6 @@ class DataUtil():
 			jsonStruct = json.loads(jsonData)
 		
 		return jsonStruct
-		
 	def _generateJsonData(self, obj, useDecForFloat: bool = False) -> str:
 		jsonData = None
 		
@@ -79,6 +93,12 @@ class DataUtil():
 				setattr(obj, key, jsonStruct[key])
 			else:
 				logging.warn("JSON data contains key not mappable to object: %s", key)
+		
+	def jsonToSensorData(self, jsonData: str = None):
+		pass
+	
+	def jsonToSystemPerformanceData(self, jsonData: str = None):
+		pass
 	
 class JsonDataEncoder(JSONEncoder):
 	"""

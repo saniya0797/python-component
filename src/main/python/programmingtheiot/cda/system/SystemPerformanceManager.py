@@ -85,7 +85,7 @@ class SystemPerformanceManager(object):
     def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
         if listener:
             self.dataMsgListener = listener
-        pass
+
 
     def startManager(self):
         """
