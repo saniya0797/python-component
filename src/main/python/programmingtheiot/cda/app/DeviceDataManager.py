@@ -13,9 +13,16 @@ from programmingtheiot.cda.connection.IRequestResponseClient import IRequestResp
 
 
 class RedisPersistenceAdapter:
+    
     DATA_GATEWAY_SERVICE = 'Data.GatewayService'
-
+	
+    
     def __init__(self):
+        """
+		Constructor for RedisPersistenceAdapter.
+		Initializes class variables and sets up the logger, configuration, and Redis client.
+		"""
+        
         self.host = None
         self.port = None
         self.redis_client = None
@@ -28,9 +35,13 @@ class RedisPersistenceAdapter:
         # Retrieve host and port from the configuration file
         self.load_config()
          # Create an instance of the Redis client using host and port
+        
         self.create_redis_client()
 
     def load_config(self):
+        """
+        Loads configuration settings from the ConfigUtil for Redis connection.
+        """
         try:
             config_util = ConfigUtil()
             config = config_util.get_config(ConfigConst.DATA_GATEWAY_SERVICE)
@@ -40,6 +51,9 @@ class RedisPersistenceAdapter:
             self.logger.error(f"Error loading configuration: {e}")
 
     def create_redis_client(self):
+        """
+        Creates an instance of the Redis client using the configured host and port.
+        """
         try:
             self.redis_client = Redis(host=self.host, port=self.port)
             self.logger.info("Redis client created.")
@@ -47,6 +61,9 @@ class RedisPersistenceAdapter:
             self.logger.error(f"Error creating Redis client: {e}")
 
     def connectClient(self) -> bool:
+        """
+        Connects to the Redis server. Returns True if successful, False otherwise.
+        """
         if self.connected:
             self.logger.warning("Redis client is already connected.")
             return True
@@ -61,6 +78,9 @@ class RedisPersistenceAdapter:
             return False
 
     def disconnectClient(self) -> bool:
+        """
+        Disconnects from the Redis server. Returns True if successful, False otherwise.
+        """
         if not self.connected:
             self.logger.warning("Redis client is already disconnected.")
             return True
@@ -75,6 +95,10 @@ class RedisPersistenceAdapter:
             return False
 
     def storeData(self, resource: ResourceNameEnum, data: SensorData) -> bool:
+        """
+        Stores SensorData in Redis with a key based on the resource and timestamp.
+        Returns True if successful, False otherwise.
+        """
         try:
             # Construct your Redis key based on the chosen pattern
             key = f"{resource.value}:{data.timestamp}"  # Adjust as needed

@@ -10,6 +10,7 @@
 from json import JSONEncoder
 import json
 import logging
+import json
 
 from decimal import Decimal
 from json import JSONEncoder
@@ -18,17 +19,26 @@ from programmingtheiot.data.SensorData import SensorData
 from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
 
 class DataUtil():
-	"""
-	Shell representation of class for student implementation.
 	
-	"""
 
 	def __init__(self, encodeToUtf8 = False):
+		"""
+		Constructor for DataUtil class.
+		Initializes class variables and logs the creation of the DataUtil instance.
+		"""
 		self.encodeToUtf8 = encodeToUtf8
 		
 		logging.info("Created DataUtil instance.")
 	
 	def actuatorDataToJson(self, data: ActuatorData = None, useDecForFloat: bool = False):
+		"""
+		Converts ActuatorData object to JSON format.
+		
+		@param data: The ActuatorData object to be converted.
+		@param useDecForFloat: A flag to use Decimal for floating-point numbers in JSON.
+
+		@return: JSON representation of the ActuatorData object.
+		"""
 		if not data:
 			logging.debug("ActuatorData is null. Returning empty string.")
 			return ""
@@ -37,6 +47,14 @@ class DataUtil():
 		return jsonData
 	
 	def sensorDataToJson(self, data: SensorData = None,useDecForFloat: bool = False):
+		"""
+		Converts SensorData object to JSON format.
+		
+		@param data: The SensorData object to be converted.
+		@param useDecForFloat: A flag to use Decimal for floating-point numbers in JSON.
+
+		@return: JSON representation of the SensorData object.
+		"""
 		if not data:
 			logging.debug("SensorData is null. Returning empty string.")
 			return ""
@@ -45,6 +63,14 @@ class DataUtil():
 		return jsonData
 
 	def systemPerformanceDataToJson(self, data: SystemPerformanceData = None, useDecForFloat: bool = False):
+		"""
+		Converts SystemPerformanceData object to JSON format.
+		
+		@param data: The SystemPerformanceData object to be converted.
+		@param useDecForFloat: A flag to use Decimal for floating-point numbers in JSON.
+
+		@return: JSON representation of the SystemPerformanceData object.
+		"""
 		if not data:
 			logging.debug("systemPerformanceData is null. Returning empty string.")
 			return ""
@@ -53,6 +79,14 @@ class DataUtil():
 		return jsonData
 	
 	def jsonToActuatorData(self, jsonData: str = None, useDecForFloat: bool = False):
+		"""
+		Converts JSON string to ActuatorData object.
+		
+		@param jsonData: The JSON string to be converted.
+		@param useDecForFloat: A flag to use Decimal for floating-point numbers in JSON.
+
+		@return: ActuatorData object created from the JSON string.
+		"""
 		if not jsonData:
 			logging.warning("JSON data is empty or null. Returning null.")
 			return None
@@ -61,7 +95,17 @@ class DataUtil():
 		ad = ActuatorData()
 		self._updateIotData(jsonStruct, ad)
 		return ad
+
+
 	def _formatDataAndLoadDictionary(self, jsonData: str, useDecForFloat: bool = False) -> dict:
+		"""
+		Formats JSON data and loads it into a dictionary.
+		
+		@param jsonData: The JSON string to be formatted and loaded.
+		@param useDecForFloat: A flag to use Decimal for floating-point numbers in JSON.
+
+		@return: A dictionary representing the loaded JSON data.
+		"""
 		jsonData = jsonData.replace("\'", "\"").replace('False', 'false').replace('True', 'true')
 		
 		jsonStruct = None
@@ -72,7 +116,16 @@ class DataUtil():
 			jsonStruct = json.loads(jsonData)
 		
 		return jsonStruct
+	
 	def _generateJsonData(self, obj, useDecForFloat: bool = False) -> str:
+		"""
+		Generates JSON data from the given object.
+		
+		@param obj: The object to be converted to JSON.
+		@param useDecForFloat: A flag to use Decimal for floating-point numbers in JSON.
+
+		@return: JSON representation of the given object.
+		"""
 		jsonData = None
 		
 		if self.encodeToUtf8:
@@ -86,6 +139,12 @@ class DataUtil():
 		return jsonData
 	
 	def _updateIotData(self, jsonStruct, obj):
+		"""
+		Updates the attributes of the given object using the provided dictionary.
+		
+		@param jsonStruct: The dictionary containing attribute-value pairs.
+		@param obj: The object to be updated based on the dictionary.
+		"""
 		varStruct = vars(obj)
 		
 		for key in jsonStruct:
@@ -94,11 +153,41 @@ class DataUtil():
 			else:
 				logging.warn("JSON data contains key not mappable to object: %s", key)
 		
-	def jsonToSensorData(self, jsonData: str = None):
-		pass
+	def jsonToSensorData(self, jsonData: str = None, useDecForFloat: bool = False):
+		"""
+		Converts JSON string to SensorData object.
+		
+		@param jsonData: The JSON string to be converted.
+		@param useDecForFloat: A flag to use Decimal for floating-point numbers in JSON.
+
+		@return: SensorrData object created from the JSON string.
+		"""
+		if not jsonData:
+			logging.warning("JSON data is empty or null. Returning null.")
+			return None
+		
+		jsonStruct = self._formatDataAndLoadDictionary(jsonData, useDecForFloat = useDecForFloat)
+		ad = SensorData()
+		self._updateIotData(jsonStruct, ad)
+		return ad
 	
-	def jsonToSystemPerformanceData(self, jsonData: str = None):
-		pass
+	def jsonToSystemPerformanceData(self, jsonData: str = None, useDecForFloat: bool = False):
+		"""
+		Converts JSON string to SystemPerformanceData object.
+		
+		@param jsonData: The JSON string to be converted.
+		@param useDecForFloat: A flag to use Decimal for floating-point numbers in JSON.
+
+		@return: SystemPerformanceData object created from the JSON string.
+		"""
+		if not jsonData:
+			logging.warning("JSON data is empty or null. Returning null.")
+			return None
+		
+		jsonStruct = self._formatDataAndLoadDictionary(jsonData, useDecForFloat = useDecForFloat)
+		ad = SystemPerformanceData()
+		self._updateIotData(jsonStruct, ad)
+		return ad
 	
 class JsonDataEncoder(JSONEncoder):
 	"""
