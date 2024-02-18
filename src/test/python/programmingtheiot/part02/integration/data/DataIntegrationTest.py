@@ -118,6 +118,8 @@ class DataIntegrationTest(unittest.TestCase):
 	def testReadSensorDataFromGdaDataPath(self):
 		logging.info("\n\n----- [SensorData JSON from file to object] -----")
 		
+
+		
 		fileName = self.gdaDataPath + '/SensorData.dat'
 		fileRef  = Path(fileName)
 		dataStr  = fileRef.read_text(encoding = 'utf-8')
