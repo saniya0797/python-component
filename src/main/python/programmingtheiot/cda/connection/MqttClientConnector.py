@@ -19,10 +19,7 @@ from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
 from programmingtheiot.cda.connection.IPubSubClient import IPubSubClient
 
 class MqttClientConnector(IPubSubClient):
-	"""
-	Shell representation of class for student implementation.
 	
-	"""
 
 	def __init__(self, clientID: str = None):
 		"""
@@ -66,6 +63,11 @@ class MqttClientConnector(IPubSubClient):
 		pass
 
 	def connectClient(self) -> bool:
+		"""
+        Connects the MQTT client to the broker.
+
+        :return: boolean: True if connection is successful, False otherwise.
+        """
 		if not self.mqttClient:
 		# TODO: make clean_session configurable
 			self.mqttClient = mqttClient.Client(client_id = self.clientID, clean_session = True)
@@ -90,6 +92,11 @@ class MqttClientConnector(IPubSubClient):
 		pass
 		
 	def disconnectClient(self) -> bool:
+		"""
+        Disconnects the MQTT client from the broker.
+
+        :return: boolean: True if disconnection is successful, False otherwise.
+        """
 		if self.mqttClient.is_connected():
 			logging.info('Disconnecting MQTT client from broker: ' + self.host)
 			self.mqttClient.loop_stop()
@@ -103,12 +110,35 @@ class MqttClientConnector(IPubSubClient):
 		pass
 		
 	def onConnect(self, client, userdata, flags, rc):
+		"""
+        Callback function invoked when the MQTT client is connected to the broker.
+
+        :param client: The client reference context.
+        :param userdata: The user reference context.
+        :param flags: The flags returned from the broker.
+        :param rc: The result code returned from the broker.
+        """
 		logging.info('MQTT client connected to broker: ' + str(client))
 		
 	def onDisconnect(self, client, userdata, rc):
+		"""
+        Callback function invoked when the MQTT client is disconnected from the broker.
+
+        :param client: The client reference context.
+        :param userdata: The user reference context.
+        :param rc: The result code returned from the broker.
+        """
 		logging.info('MQTT client disconnected from broker: ' + str(client))
 		
 	def onMessage(self, client, userdata, msg):
+		"""
+        Callback function invoked when a message is received from the broker.
+
+        :param client: The client reference context.
+        :param userdata: The user reference context.
+        :param msg: The received message.
+        :return: boolean: True if payload is not empty, False otherwise.
+        """
 		payload = msg.payload
 		
 		if payload:
@@ -117,9 +147,24 @@ class MqttClientConnector(IPubSubClient):
 			logging.info('MQTT message received with no payload: ' + str(msg))
 			
 	def onPublish(self, client, userdata, mid):
+		"""
+        Callback function invoked when a message is published.
+
+        :param client: The client reference context.
+        :param userdata: The user reference context.
+        :param mid: The message ID.
+        """
 		logging.info('MQTT message published: ' + str(client))
 	
 	def onSubscribe(self, client, userdata, mid, granted_qos):
+		"""
+        Callback function invoked when subscribing to a topic.
+
+        :param client: The client reference context.
+        :param userdata: The user reference context.
+        :param mid: The message ID.
+        :param granted_qos: The QoS granted by the broker.
+        """
 		logging.info('MQTT client subscribed: ' + str(client))	
 	
 	def onActuatorCommandMessage(self, client, userdata, msg):
@@ -138,6 +183,14 @@ class MqttClientConnector(IPubSubClient):
 		pass
 	
 	def publishMessage(self, resource: ResourceNameEnum = None, msg: str = None, qos: int = ConfigConst.DEFAULT_QOS) -> bool:
+		"""
+        Publishes a message to the specified topic.
+
+        :param resource: The topic to publish the message to.
+        :param msg: The message to publish.
+        :param qos: The quality of service level for message delivery.
+        :return: boolean: True if message is published successfully, False otherwise.
+        """
 	# check validity of resource (topic)
 		if not resource:
 			logging.warning('No topic specified. Cannot publish message.')
@@ -160,6 +213,13 @@ class MqttClientConnector(IPubSubClient):
 	
 	def subscribeToTopic(self, resource: ResourceNameEnum = None, callback = None, qos: int = ConfigConst.DEFAULT_QOS) -> bool:
 		# check validity of resource (topic)
+		"""
+        Subscribes to the specified topic.
+
+        :param resource: The topic to subscribe to.
+        :param qos: The quality of service level for message delivery.
+        :return: boolean: True if subscription is successful, False otherwise.
+        """
 		if not resource:
 			logging.warning('No topic specified. Cannot subscribe.')
 			return False
@@ -175,7 +235,12 @@ class MqttClientConnector(IPubSubClient):
 		return True
 	
 	def unsubscribeFromTopic(self, resource: ResourceNameEnum = None):
-		# check validity of resource (topic)
+		"""
+        Unsubscribes from the specified topic.
+
+        :param resource: The topic to unsubscribe from.
+        :return: boolean: True if unsubscription is successful, False otherwise.
+        """
 		if not resource:
 			logging.warning('No topic specified. Cannot unsubscribe.')
 			return False
@@ -186,5 +251,10 @@ class MqttClientConnector(IPubSubClient):
 		return True
 
 	def setDataMessageListener(self, listener: IDataMessageListener = None):
+		"""
+        Sets the data message listener for the MQTT client.
+
+        :param listener: The data message listener to set.
+        """
 		if listener:
 			self.dataMsgListener = listener

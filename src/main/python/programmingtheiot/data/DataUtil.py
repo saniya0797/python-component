@@ -43,8 +43,11 @@ class DataUtil():
 			logging.debug("ActuatorData is null. Returning empty string.")
 			return ""
 		
+		logging.debug("Encoding ActuatorData to JSON [pre]  --> " + str(data))
+		
 		jsonData = self._generateJsonData(obj = data, useDecForFloat = False)
-		return jsonData
+		
+		logging.info("Encoding ActuatorData to JSON [post] --> " + str(jsonData))
 	
 	def sensorDataToJson(self, data: SensorData = None,useDecForFloat: bool = False):
 		"""
@@ -59,7 +62,11 @@ class DataUtil():
 			logging.debug("SensorData is null. Returning empty string.")
 			return ""
 		
+		logging.debug("Encoding SensorData to JSON [pre]  --> " + str(data))
+		
 		jsonData = self._generateJsonData(obj = data, useDecForFloat = False)
+		
+		logging.debug("Encoding SensorData to JSON [post] --> " + str(jsonData))
 		return jsonData
 
 	def systemPerformanceDataToJson(self, data: SystemPerformanceData = None, useDecForFloat: bool = False):
@@ -75,7 +82,11 @@ class DataUtil():
 			logging.debug("systemPerformanceData is null. Returning empty string.")
 			return ""
 		
+		logging.debug("Encoding SystemPerformanceData to JSON [pre]  --> " + str(data))
+		
 		jsonData = self._generateJsonData(obj = data, useDecForFloat = False)
+		
+		logging.debug("Encoding SystemPerformanceData to JSON [post] --> " + str(jsonData))
 		return jsonData
 	
 	def jsonToActuatorData(self, jsonData: str = None, useDecForFloat: bool = False):
@@ -92,8 +103,14 @@ class DataUtil():
 			return None
 		
 		jsonStruct = self._formatDataAndLoadDictionary(jsonData, useDecForFloat = useDecForFloat)
+		
+		logging.debug("Converting JSON to ActuatorData [pre]  --> " + str(jsonStruct))
+		
 		ad = ActuatorData()
+		
 		self._updateIotData(jsonStruct, ad)
+		
+		logging.debug("Converted JSON to ActuatorData [post] --> " + str(ad))
 		return ad
 
 
@@ -167,8 +184,14 @@ class DataUtil():
 			return None
 		
 		jsonStruct = self._formatDataAndLoadDictionary(jsonData, useDecForFloat = useDecForFloat)
-		ad = SensorData()
-		self._updateIotData(jsonStruct, ad)
+		
+		logging.debug("Converting JSON to SensorData [pre]  --> " + str(jsonStruct))
+		
+		sd = SensorData()
+		
+		self._updateIotData(jsonStruct, sd)
+		
+		logging.debug("Converted JSON to SensorData [post] --> " + str(sd))
 		return ad
 	
 	def jsonToSystemPerformanceData(self, jsonData: str = None, useDecForFloat: bool = False):
@@ -185,8 +208,14 @@ class DataUtil():
 			return None
 		
 		jsonStruct = self._formatDataAndLoadDictionary(jsonData, useDecForFloat = useDecForFloat)
-		ad = SystemPerformanceData()
-		self._updateIotData(jsonStruct, ad)
+		
+		logging.debug("Converting JSON to SystemPerformanceData [pre]  --> " + str(jsonStruct))
+		
+		sp = SystemPerformanceData()
+		
+		self._updateIotData(jsonStruct, sp)
+		
+		logging.debug("Converted JSON to SystemPerformanceData [post] --> " + str(sp))
 		return ad
 	
 class JsonDataEncoder(JSONEncoder):
