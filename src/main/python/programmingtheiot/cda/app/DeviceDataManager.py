@@ -206,6 +206,8 @@ class DeviceDataManager(IDataMessageListener):
 		if data:
 			logging.debug("Incoming sensor data received (from sensor manager): " + str(data))
 			self._handleSensorDataAnalysis(data)
+			jsonData = DataUtil().sensorDataToJson(data = data)
+			self._handleUpstreamTransmission(resource = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, msg = jsonData)
 			return True
 		else:
 			logging.warning("Incoming sensor data is invalid (null). Ignoring.")
@@ -222,18 +224,36 @@ class DeviceDataManager(IDataMessageListener):
 		"""
 		if data:
 			logging.debug("Incoming system performance message received (from sys perf manager): " + str(data))
+			jsonData = DataUtil().systemPerformanceDataToJson(data = data)
+			self._handleUpstreamTransmission(resource = ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, msg = jsonData)
 			return True
 		else:
 			logging.warning("Incoming system performance data is invalid (null). Ignoring.")
 			return False
 	
 	def setSystemPerformanceDataListener(self, listener: ISystemPerformanceDataListener = None):
+		"""
+        Sets the system performance data listener for the DeviceDataManager.
+
+        :param listener: The system performance data listener to set.
+        """
 		pass
 			
-	def setTelemetryDataListener(self, name: str = None, listener: ITelemetryDataListener = None):
+	def setTelemetryDataListener(self, name: str = None, listener: ITelemetryDataListener = None): 
+		"""
+        Sets the telemetry data listener for the DeviceDataManager.
+
+        :param name: The name of the telemetry data listener.
+        :param listener: The telemetry data listener to set.
+        """
 		pass
 			
 	def startManager(self):
+		"""
+        Starts the DeviceDataManager.
+
+        It initiates the start sequence for all managers including system performance manager, sensor adapter manager, and MQTT client.
+        """
 		logging.info("Starting DeviceDataManager...")
 	
 		if self.sysPerfMgr:
@@ -249,6 +269,11 @@ class DeviceDataManager(IDataMessageListener):
 		logging.info("Started DeviceDataManager.")
 		
 	def stopManager(self):
+		"""
+        Stops the DeviceDataManager.
+
+        It initiates the stop sequence for all managers including system performance manager, sensor adapter manager, and MQTT client.
+        """
 		logging.info("Stopping DeviceDataManager...")
 	
 		if self.sysPerfMgr:
