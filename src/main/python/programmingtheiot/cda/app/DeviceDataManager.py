@@ -47,6 +47,7 @@ from programmingtheiot.common.IDataMessageListener import IDataMessageListener
 from programmingtheiot.common.ISystemPerformanceDataListener import ISystemPerformanceDataListener
 from programmingtheiot.common.ITelemetryDataListener import ITelemetryDataListener
 from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
+from programmingtheiot.cda.connection.CoapClientConnector import CoapClientConnector
 
 from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.data.SensorData import SensorData
@@ -55,6 +56,9 @@ from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
 class DeviceDataManager(IDataMessageListener):
 	
 	def __init__(self):
+		"""
+		Initializes the class DeviceDataManager(IDataMessageListener)
+		"""
 		self.configUtil = ConfigUtil()
 	
 		self.enableSystemPerf   = \
@@ -69,6 +73,14 @@ class DeviceDataManager(IDataMessageListener):
 			self.configUtil.getBoolean( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_MQTT_CLIENT_KEY)
 		
+		self.enableCoapClient = \
+			self.configUtil.getBoolean( \
+				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
+
+
+		
+
+	
 		# NOTE: this can also be retrieved from the configuration file
 		self.enableActuation    = True
 		
@@ -80,7 +92,10 @@ class DeviceDataManager(IDataMessageListener):
 		self.mqttClient         = None
 		self.coapClient         = None
 		self.coapServer         = None
-		
+
+		if self.enableCoapClient :
+			self.coapClient = CoapClientConnector(dataMsgListener = self)
+
 		if self.enableSystemPerf:
 			self.sysPerfMgr = SystemPerformanceManager()
 			self.sysPerfMgr.setDataMessageListener(self)
