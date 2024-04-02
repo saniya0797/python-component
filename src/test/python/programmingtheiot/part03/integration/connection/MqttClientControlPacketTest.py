@@ -43,20 +43,20 @@ class MqttClientControlPacketTest(unittest.TestCase):
 		# TODO: implement this test
 		self.mcc.connectClient()
 		# self.mcc.connect()
-		sleep(2)  # Allow time for the connection to be established
+		sleep(30)  # Allow time for the connection to be established
 		self.assertTrue(self.mcc.mqttClient.is_connected())
 		self.mcc.disconnectClient()
-		sleep(2)  # Allow time for the disconnection
+		sleep(30)  # Allow time for the disconnection
 		self.assertFalse(self.mcc.mqttClient.is_connected())
 		pass
 	
 	def testServerPing(self):
 		# TODO: implement this test
 		self.assertTrue(self.mcc.connectClient())
-		sleep(2)
+		sleep(3)
 		self.assertTrue(self.mcc.publishMessage(resource=ResourceNameEnum.CDA_MGMT_STATUS_MSG_RESOURCE, msg="Hello, MQTT!", qos=1))
 
-		sleep(2)
+		sleep(20)
         
 		pass
 	
@@ -66,7 +66,7 @@ class MqttClientControlPacketTest(unittest.TestCase):
 		# IMPORTANT: be sure to use QoS 1 and 2 to see ALL control packets
 		self.assertTrue(self.mcc.connectClient())
     	 # Wait for connection to establish
-		sleep(2) 
+		sleep(20) 
 
         # Subscribe to a topic
 		self.assertTrue(self.mcc.subscribeToTopic(resource=ResourceNameEnum.CDA_MGMT_STATUS_MSG_RESOURCE, qos=1))
@@ -77,7 +77,31 @@ class MqttClientControlPacketTest(unittest.TestCase):
 
 
         # Wait for the message to be received
-		sleep(2)
+		sleep(200)
+
+
+        # Unsubscribe from the topic
+		self.assertTrue(self.mcc.unsubscribeFromTopic(resource=ResourceNameEnum.CDA_MGMT_STATUS_MSG_RESOURCE))
+		self.assertTrue(self.mcc.disconnectClient())
+
+	def testPubSubb(self):
+		# TODO: implement this test
+		# 
+		# IMPORTANT: be sure to use QoS 1 and 2 to see ALL control packets
+		self.assertTrue(self.mcc.connectClient())
+    	 # Wait for connection to establish
+		sleep(2) 
+
+        # Subscribe to a topic
+		self.assertTrue(self.mcc.subscribeToTopic(resource=ResourceNameEnum.CDA_MGMT_STATUS_MSG_RESOURCE, qos=2))
+
+
+        # Publish a message
+		self.assertTrue(self.mcc.publishMessage(resource=ResourceNameEnum.CDA_MGMT_STATUS_MSG_RESOURCE, msg="Hello, MQTT!", qos=2))
+
+
+        # Wait for the message to be received
+		sleep(200)
 
 
         # Unsubscribe from the topic
