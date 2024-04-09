@@ -76,6 +76,7 @@ class DeviceDataManager(IDataMessageListener):
 		self.enableCoapClient = \
 			self.configUtil.getBoolean( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
+		
 
 
 		
@@ -92,6 +93,7 @@ class DeviceDataManager(IDataMessageListener):
 		self.mqttClient         = None
 		self.coapClient         = None
 		self.coapServer         = None
+		
 
 		if self.enableCoapClient :
 			self.coapClient = CoapClientConnector(dataMsgListener = self)
@@ -153,7 +155,7 @@ class DeviceDataManager(IDataMessageListener):
 		"""
 		pass
 	
-	def handleActuatorCommandMessage(self, data: ActuatorData) -> bool:
+	def handleActuatorCommandMessage(self, data: ActuatorData) -> ActuatorData:
 		"""
 		This callback method will be invoked by the connection that's handling
 		an incoming ActuatorData command message.
@@ -344,11 +346,26 @@ class DeviceDataManager(IDataMessageListener):
 			# task implementations, and not this function
 			self.handleActuatorCommandMessage(ad)
 		
-	def _handleUpstreamTransmission(self, resourceName: ResourceNameEnum, msg: str):
+	def _handleUpstreamTransmission(resource = None, msg: str = None):
 		"""
 		Call this from handleActuatorCommandResponse(), handlesensorMessage(), and handleSystemPerformanceMessage()
 		to determine if the message should be sent upstream. Steps to take:
 		1) Check connection: Is there a client connection configured (and valid) to a remote MQTT or CoAP server?
 		2) Act on msg: If # 1 is true, send message upstream using one (or both) client connections.
 		"""
-		pass
+		logging.info("Upstream transmission invoked. Checking comm's integration.")
+	
+		# NOTE: If using MQTT, the following will attempt to publish the message to the broker
+		if self.mqttClient:
+			if self.mqttClient.publishMessage(resource = resource, msg = msg):
+				logging.debug("Published incoming data to resource (MQTT): %s", str(resource))
+			else:
+				logging.warning("Failed to publish incoming data to resource (MQTT): %s", str(resource))
+		
+		# NOTE: If using CoAP, the following will attempt to PUT the message to the server
+		if self.coapClient:
+			if self.coapClient.sendPutRequest(resource = resource, payload = msg):
+				logging.debug("Put incoming message data to resource (CoAP): %s", str(resource))
+			else:
+				logging.warning("Failed to put incoming message data to resource (CoAP): %s", str(resource))
+			pass

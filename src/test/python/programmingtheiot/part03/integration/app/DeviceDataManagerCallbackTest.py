@@ -11,7 +11,17 @@ import logging
 import unittest
 
 from time import sleep
+from time import sleep
 
+import programmingtheiot.common.ConfigConst as ConfigConst
+
+from programmingtheiot.cda.app.DeviceDataManager import DeviceDataManager
+from programmingtheiot.cda.connection.MqttClientConnector import MqttClientConnector
+
+from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
+from programmingtheiot.data.DataUtil import DataUtil
+from programmingtheiot.data.ActuatorData import ActuatorData
+from programmingtheiot.data.SensorData import SensorData
 import programmingtheiot.common.ConfigConst as ConfigConst
 
 from programmingtheiot.cda.app.DeviceDataManager import DeviceDataManager
@@ -48,19 +58,25 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 	def tearDown(self):
 		pass
 
-	#@unittest.skip("Ignore for now.")
+	ddMgr=None
 	def testActuatorDataCallback(self):
-		ddMgr = DeviceDataManager()
+		# Option 1 example (be sure to disable comm's using PiotConfig.props):
+		#ddMgr = DeviceDataManager()
 		
-		actuatorData = ActuatorData(typeID = ConfigConst.HVAC_ACTUATOR_TYPE)
+		# Option 2 example (be sure to update the DeviceDataManager constructor):
+		#ddMgr = DeviceDataManager(disableAllComms = True)
+		
+		ddMgr = DeviceDataManager(disableAllComms = True)
+		
+		actuatorData = ActuatorData(actuatorType = ConfigConst.HVAC_ACTUATOR_TYPE)
 		actuatorData.setCommand(ConfigConst.COMMAND_ON)
 		actuatorData.setStateData("This is a test.")
-		actuatorData.setValue(52)
 		
 		ddMgr.handleActuatorCommandMessage(actuatorData)
 		
 		sleep(10)
 		
+
 if __name__ == "__main__":
 	unittest.main()
 	
