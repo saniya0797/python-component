@@ -58,7 +58,6 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 	def tearDown(self):
 		pass
 
-	ddMgr=None
 	def testActuatorDataCallback(self):
 		# Option 1 example (be sure to disable comm's using PiotConfig.props):
 		#ddMgr = DeviceDataManager()
@@ -68,9 +67,10 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 		
 		ddMgr = DeviceDataManager(disableAllComms = True)
 		
-		actuatorData = ActuatorData(actuatorType = ConfigConst.HVAC_ACTUATOR_TYPE)
+		actuatorData = ActuatorData(typeID = ConfigConst.HVAC_ACTUATOR_TYPE)
 		actuatorData.setCommand(ConfigConst.COMMAND_ON)
 		actuatorData.setStateData("This is a test.")
+		actuatorData.setValue(50)
 		
 		ddMgr.handleActuatorCommandMessage(actuatorData)
 		

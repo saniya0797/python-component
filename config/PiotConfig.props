@@ -12,7 +12,7 @@
 #
 [Mqtt.GatewayService]
 credFile       = ./cred/PiotMqttLocalCred.props
-certFile       = ./cert/PiotMqttLocalCertFile.pem
+certFile       = /connectedDevices/mosquitto-2.0.18/certs/server.crt
 host           = localhost
 port           = 1883
 securePort     = 8883

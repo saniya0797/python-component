@@ -77,6 +77,25 @@ class DeviceDataManager(IDataMessageListener):
 			self.configUtil.getBoolean( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
 		
+		if disableAllComms:
+			self.enableMqttClient = False
+			self.enableCoapServer = False
+			self.enableCoapClient = False
+		
+		else:
+			self.enableMqttClient = \
+				self.configUtil.getBoolean( \
+					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_MQTT_CLIENT_KEY)
+
+			self.enableCoapServer = \
+				self.configUtil.getBoolean( \
+					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_SERVER_KEY)
+
+			self.enableCoapClient = \
+				self.configUtil.getBoolean( \
+					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
+
+		
 
 
 		
@@ -278,6 +297,7 @@ class DeviceDataManager(IDataMessageListener):
 		
 		if self.sensorAdapterMgr:
 			self.sensorAdapterMgr.startManager()
+		logging.info("Devicedata manager statred")
 		
 		if self.mqttClient:
 			self.mqttClient.connectClient()
@@ -353,19 +373,19 @@ class DeviceDataManager(IDataMessageListener):
 		1) Check connection: Is there a client connection configured (and valid) to a remote MQTT or CoAP server?
 		2) Act on msg: If # 1 is true, send message upstream using one (or both) client connections.
 		"""
-		logging.info("Upstream transmission invoked. Checking comm's integration.")
+		# logging.info("Upstream transmission invoked. Checking comm's integration.")
 	
-		# NOTE: If using MQTT, the following will attempt to publish the message to the broker
-		if self.mqttClient:
-			if self.mqttClient.publishMessage(resource = resource, msg = msg):
-				logging.debug("Published incoming data to resource (MQTT): %s", str(resource))
-			else:
-				logging.warning("Failed to publish incoming data to resource (MQTT): %s", str(resource))
+		# # NOTE: If using MQTT, the following will attempt to publish the message to the broker
+		# if self.mqttClient:
+		# 	if self.mqttClient.publishMessage(resource = resource, msg = msg):
+		# 		logging.debug("Published incoming data to resource (MQTT): %s", str(resource))
+		# 	else:
+		# 		logging.warning("Failed to publish incoming data to resource (MQTT): %s", str(resource))
 		
-		# NOTE: If using CoAP, the following will attempt to PUT the message to the server
-		if self.coapClient:
-			if self.coapClient.sendPutRequest(resource = resource, payload = msg):
-				logging.debug("Put incoming message data to resource (CoAP): %s", str(resource))
-			else:
-				logging.warning("Failed to put incoming message data to resource (CoAP): %s", str(resource))
-			pass
+		# # NOTE: If using CoAP, the following will attempt to PUT the message to the server
+		# if self.coapClient:
+		# 	if self.coapClient.sendPutRequest(resource = resource, payload = msg):
+		# 		logging.debug("Put incoming message data to resource (CoAP): %s", str(resource))
+		# 	else:
+		# 		logging.warning("Failed to put incoming message data to resource (CoAP): %s", str(resource))
+		pass
