@@ -77,24 +77,7 @@ class DeviceDataManager(IDataMessageListener):
 			self.configUtil.getBoolean( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
 		
-		if disableAllComms:
-			self.enableMqttClient = False
-			self.enableCoapServer = False
-			self.enableCoapClient = False
 		
-		else:
-			self.enableMqttClient = \
-				self.configUtil.getBoolean( \
-					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_MQTT_CLIENT_KEY)
-
-			self.enableCoapServer = \
-				self.configUtil.getBoolean( \
-					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_SERVER_KEY)
-
-			self.enableCoapClient = \
-				self.configUtil.getBoolean( \
-					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
-
 		
 
 
