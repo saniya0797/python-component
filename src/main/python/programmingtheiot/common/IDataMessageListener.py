@@ -56,6 +56,7 @@ class IDataMessageListener():
 		@return ActuatorData An ActuatorData message that contains the same content as 'data',
 		but with the response flag set to True.
 		"""
+		
 		pass
 	
 	def handleActuatorCommandResponse(self, data: ActuatorData) -> bool:
