@@ -12,7 +12,7 @@
 #
 [Mqtt.GatewayService]
 credFile       = ./cred/PiotMqttLocalCred.props
-certFile       = /connectedDevices/mosquitto-2.0.18/certs/server.crt
+certFile       = /etc/mosquitto/certs/server.crt
 host           = localhost
 port           = 1883
 securePort     = 8883
@@ -31,7 +31,7 @@ host           = localhost
 port           = 5683
 securePort     = 5684
 enableAuth     = False
-enableCrypt    = False
+enableCrypt    = True
 
 
 #
@@ -50,7 +50,7 @@ enableCrypt = False
 deviceLocationID = constraineddevice001
 enableEmulator   = True
 enableSenseHAT   = True
-enableMqttClient = False
+enableMqttClient = True
 enableCoapServer = False
 enableCoapClient = False
 enableSystemPerformance = True

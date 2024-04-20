@@ -11,8 +11,11 @@ import logging
 import unittest
 
 from time import sleep
-
+import sys
+ 
+sys.path.append("./src/main/python/")
 import programmingtheiot.common.ConfigConst as ConfigConst
+
 
 from programmingtheiot.cda.app.DeviceDataManager import DeviceDataManager
 from programmingtheiot.data.ActuatorData import ActuatorData
@@ -58,7 +61,7 @@ class DeviceDataManagerIntegrationTest(unittest.TestCase):
 		ddMgr.startManager()
 		
 		# 5 min's should be long enough to run the tests and manually adjust the emulator values
-		sleep(300)
+		sleep(120)
 		
 		ddMgr.stopManager()
 		

@@ -125,6 +125,9 @@ class SensorAdapterManager(object):
 		tempData     = self.tempAdapter.generateTelemetry()
 		
 		humidityData.setLocationID(self.locationID)
+		
+		
+
 		pressureData.setLocationID(self.locationID)
 		tempData.setLocationID(self.locationID)
 		

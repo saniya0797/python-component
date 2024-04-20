@@ -77,28 +77,6 @@ class DeviceDataManager(IDataMessageListener):
 			self.configUtil.getBoolean( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
 		
-		if disableAllComms:
-			self.enableMqttClient = False
-			self.enableCoapServer = False
-			self.enableCoapClient = False
-		
-		else:
-			self.enableMqttClient = \
-				self.configUtil.getBoolean( \
-					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_MQTT_CLIENT_KEY)
-
-			self.enableCoapServer = \
-				self.configUtil.getBoolean( \
-					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_SERVER_KEY)
-
-			self.enableCoapClient = \
-				self.configUtil.getBoolean( \
-					section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
-
-		
-
-
-		
 
 	
 		# NOTE: this can also be retrieved from the configuration file
@@ -109,9 +87,9 @@ class DeviceDataManager(IDataMessageListener):
 		self.actuatorAdapterMgr = None
 		
 		# NOTE: The following aren't used until Part III but should be declared now
-		self.mqttClient         = None
-		self.coapClient         = None
-		self.coapServer         = None
+		# self.mqttClient         = None
+		# self.coapClient         = None
+		# self.coapServer         = None
 		
 
 		if self.enableCoapClient :
@@ -211,7 +189,7 @@ class DeviceDataManager(IDataMessageListener):
 			resourceName = ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE
 			
 			# delegate to the transmit function any potential upstream comm's
-			self._handleUpstreamTransmission(resource = resourceName, msg = actuatorMsg)
+			self._handleUpstreamTransmission(self, resource = resourceName, msg = actuatorMsg)
 			
 			return True
 		else:
@@ -230,7 +208,7 @@ class DeviceDataManager(IDataMessageListener):
 		"""
 		
 	
-	def handleSensorMessage(self, data: SensorData) -> bool:
+	def handleSensorMessage(self, data: SensorData=None) -> bool:
 		"""
 		This callback method will be invoked by the sensor manager that just processed
 		a new sensor reading, which creates a new SensorData instance that will be
@@ -261,7 +239,7 @@ class DeviceDataManager(IDataMessageListener):
 		if data:
 			logging.debug("Incoming system performance message received (from sys perf manager): " + str(data))
 			jsonData = DataUtil().systemPerformanceDataToJson(data = data)
-			self._handleUpstreamTransmission(resource = ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, msg = jsonData)
+			self._handleUpstreamTransmission(self, resource = ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, msg = jsonData)
 			return True
 		else:
 			logging.warning("Incoming system performance data is invalid (null). Ignoring.")
@@ -366,26 +344,26 @@ class DeviceDataManager(IDataMessageListener):
 			# task implementations, and not this function
 			self.handleActuatorCommandMessage(ad)
 		
-	def _handleUpstreamTransmission(resource = None, msg: str = None):
+	def _handleUpstreamTransmission(self, resource = None, msg: str = None):
 		"""
 		Call this from handleActuatorCommandResponse(), handlesensorMessage(), and handleSystemPerformanceMessage()
 		to determine if the message should be sent upstream. Steps to take:
 		1) Check connection: Is there a client connection configured (and valid) to a remote MQTT or CoAP server?
 		2) Act on msg: If # 1 is true, send message upstream using one (or both) client connections.
 		"""
-		# logging.info("Upstream transmission invoked. Checking comm's integration.")
-	
-		# # NOTE: If using MQTT, the following will attempt to publish the message to the broker
-		# if self.mqttClient:
-		# 	if self.mqttClient.publishMessage(resource = resource, msg = msg):
-		# 		logging.debug("Published incoming data to resource (MQTT): %s", str(resource))
-		# 	else:
-		# 		logging.warning("Failed to publish incoming data to resource (MQTT): %s", str(resource))
+		logging.info("Upstream transmission invoked. Checking comm's integration.")
 		
-		# # NOTE: If using CoAP, the following will attempt to PUT the message to the server
+		# NOTE: If using MQTT, the following will attempt to publish the message to the broker
+		if self.mqttClient:
+			if self.mqttClient.publishMessage(resource = resource, msg = msg):
+				logging.debug("Published incoming data to resource (MQTT): %s", str(resource))
+			else:
+				logging.warning("Failed to publish incoming data to resource (MQTT): %s", str(resource))
+		
+		# NOTE: If using CoAP, the following will attempt to PUT the message to the server
 		# if self.coapClient:
 		# 	if self.coapClient.sendPutRequest(resource = resource, payload = msg):
 		# 		logging.debug("Put incoming message data to resource (CoAP): %s", str(resource))
 		# 	else:
 		# 		logging.warning("Failed to put incoming message data to resource (CoAP): %s", str(resource))
-		pass
+		
