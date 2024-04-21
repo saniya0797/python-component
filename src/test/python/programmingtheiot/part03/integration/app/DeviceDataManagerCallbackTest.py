@@ -43,6 +43,9 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 	NOTE 2: This test requires you to examine each test case,
 	none of which will execute as they're currently disabled.
 	Choose the test
+	NOTE 2: This test requires you to examine each test case,
+	none of which will execute as they're currently disabled.
+	Choose the test
 	"""
 	
 	@classmethod
@@ -55,7 +58,6 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 
 	def tearDown(self):
 		pass
-
 
 	def testActuatorDataCallback(self):
 	# Option 1 example (be sure to disable comm's using PiotConfig.props):
@@ -70,11 +72,10 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 		actuatorData.setCommand(ConfigConst.COMMAND_ON)
 		actuatorData.setStateData("This is a test.")
 		actuatorData.setValue(52)
-
-		mqttClient.disconnectClient()
-		ddMgr.stopManager()
-	
-
+		
+		ddMgr.handleActuatorCommandMessage(actuatorData)
+		
+		sleep(10)
 
 if __name__ == "__main__":
 	unittest.main()
