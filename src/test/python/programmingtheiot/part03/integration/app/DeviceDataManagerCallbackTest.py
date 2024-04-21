@@ -56,6 +56,7 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 	def tearDown(self):
 		pass
 
+
 	def testActuatorDataCallback(self):
 	# Option 1 example (be sure to disable comm's using PiotConfig.props):
 		ddMgr = DeviceDataManager()
@@ -69,10 +70,11 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 		actuatorData.setCommand(ConfigConst.COMMAND_ON)
 		actuatorData.setStateData("This is a test.")
 		actuatorData.setValue(52)
-		
-		ddMgr.handleActuatorCommandMessage(actuatorData)
-		
-		sleep(10)
+
+		mqttClient.disconnectClient()
+		ddMgr.stopManager()
+	
+
 
 if __name__ == "__main__":
 	unittest.main()
