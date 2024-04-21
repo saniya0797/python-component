@@ -11,8 +11,11 @@ import logging
 import unittest
 
 from time import sleep
-
+import sys
+ 
+sys.path.append("./src/main/python/")
 import programmingtheiot.common.ConfigConst as ConfigConst
+
 
 from programmingtheiot.cda.app.DeviceDataManager import DeviceDataManager
 from programmingtheiot.data.ActuatorData import ActuatorData

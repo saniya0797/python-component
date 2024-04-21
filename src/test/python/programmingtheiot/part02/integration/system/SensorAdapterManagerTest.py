@@ -8,6 +8,9 @@
 # 
 
 import logging
+import sys
+ 
+sys.path.append("./src/main/python/")
 import unittest
 
 from time import sleep

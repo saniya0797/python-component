@@ -55,6 +55,7 @@ class HvacEmulatorTask(BaseActuatorSimTask):
         """
 		if self.sh.screen:
 			msg = self.getSimpleName() 
+			print(str(val) +'HVAC On')
 			self.sh.screen.scroll_text(msg)
 			return 0
 		else:
@@ -74,6 +75,7 @@ class HvacEmulatorTask(BaseActuatorSimTask):
         """
 		if self.sh.screen:
 			msg = self.getSimpleName() 
+			print(str(val) +'HVAC Off')
 			self.sh.screen.scroll_text(msg)
 			
 			# optional sleep (5 seconds) for message to scroll before clearing display

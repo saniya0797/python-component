@@ -43,6 +43,9 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 	NOTE 2: This test requires you to examine each test case,
 	none of which will execute as they're currently disabled.
 	Choose the test
+	NOTE 2: This test requires you to examine each test case,
+	none of which will execute as they're currently disabled.
+	Choose the test
 	"""
 	
 	@classmethod
@@ -56,87 +59,23 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 	def tearDown(self):
 		pass
 
-	@unittest.skip("Ignore for now.")
-	def testStartAndStopManagerWithMqtt(self):
-		"""
-		NOTE: Be sure to enable CoAP by setting the following flag to True
-		within PiotConfig.props
-		enableMqttClient = True
-		enableCoapClient = False
-		
-		"""
+	def testActuatorDataCallback(self):
+	# Option 1 example (be sure to disable comm's using PiotConfig.props):
 		ddMgr = DeviceDataManager()
-		ddMgr.startManager()
+	
+	# Option 2 example (be sure to update the DeviceDataManager constructor):
+	#ddMgr = DeviceDataManager(disableAllComms = True)
+	
+		#ddMgr = DeviceDataManager(disableAllComms = True)
 		
-		mqttClient = MqttClientConnector()
-		mqttClient.connectClient()
+		actuatorData = ActuatorData( typeID= ConfigConst.HVAC_ACTUATOR_TYPE)
+		actuatorData.setCommand(ConfigConst.COMMAND_ON)
+		actuatorData.setStateData("This is a test.")
+		actuatorData.setValue(52)
 		
-		ad = ActuatorData()
-		ad.setCommand(ConfigConst.COMMAND_ON)
-		ad.setValue(15.4)
-		ad.setAsResponse()
-		adJson = DataUtil().actuatorDataToJson(ad)
-		
-		mqttClient.publishMessage(ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE, msg = adJson, qos = 1)
-		
-		sd = SensorData()
-		sd.setValue(133.5)
-		sdJson = DataUtil().sensorDataToJson(sd)
-		
-		mqttClient.publishMessage(ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, msg = sdJson, qos = 1)
+		ddMgr.handleActuatorCommandMessage(actuatorData)
 		
 		sleep(10)
-		
-		mqttClient.disconnectClient()
-		ddMgr.stopManager()
-	
-
-	def testDeviceDataMgrTimedIntegration(self):
-		# OPTION 1: For MQTT testing - be sure the MQTT client is enabled in `PiotConfig.props`.
-		#           and your MQTT broker is running (as per the Setup instructions above).
-		# OPTION 2: For CoAP testing - be sure the CoAP client is enabled in `PiotConfig.props`,
-		#           and your CoAP server is running within your GDA.
-		ddMgr = DeviceDataManager()
-		ddMgr.startManager()
-		
-		# 5 min's should be long enough to run the tests and manually adjust the emulator values
-		sleep(300)
-		
-		ddMgr.stopManager()
-
-	@unittest.skip("Ignore for now.")
-	def testStartAndStopManagerWithCoap(self):
-		"""
-		NOTE: Be sure to enable CoAP by setting the following flag to True
-		within PiotConfig.props
-		enableMqttClient = False
-		enableCoapClient = True
-		
-		"""
-		
-		ddMgr = DeviceDataManager()
-		ddMgr.startManager()
-		
-		sleep(60)
-		
-		ddMgr.stopManager()
-
-	@unittest.skip("Ignore for now.")
-	def testStartAndStopManagerWithMqttAndCoap(self):
-		"""
-		NOTE: Be sure to enable MQTT and CoAP by setting the following flags to True
-		within PiotConfig.props
-		enableMqttClient = True
-		enableCoapClient = True
-		
-		"""
-		
-		ddMgr = DeviceDataManager()
-		ddMgr.startManager()
-		
-		sleep(60)
-		
-		ddMgr.stopManager()
 
 if __name__ == "__main__":
 	unittest.main()

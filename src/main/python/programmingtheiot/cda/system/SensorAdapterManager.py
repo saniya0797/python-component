@@ -44,7 +44,7 @@ class SensorAdapterManager(object):
 		self.locationID   = \
 			self.configUtil.getProperty( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.DEVICE_LOCATION_ID_KEY, defaultVal = ConfigConst.NOT_SET)
-			
+		
 		if self.pollRate <= 0:
 			self.pollRate = ConfigConst.DEFAULT_POLL_CYCLES
 			
@@ -120,22 +120,29 @@ class SensorAdapterManager(object):
 		"""
         Handles telemetry data from humidity, pressure, and temperature sensors.
         """
+		
 		humidityData = self.humidityAdapter.generateTelemetry()
 		pressureData = self.pressureAdapter.generateTelemetry()
 		tempData     = self.tempAdapter.generateTelemetry()
 		
-		humidityData.setLocationID(self.locationID)
-		pressureData.setLocationID(self.locationID)
-		tempData.setLocationID(self.locationID)
+		if humidityData:
+			humidityData.setLocationID(self.locationID)
+		if pressureData:
+			pressureData.setLocationID(self.locationID)
+		if tempData:
+			tempData.setLocationID(self.locationID)
 		
 		logging.debug('Generated humidity data: ' + str(humidityData))
 		logging.debug('Generated pressure data: ' + str(pressureData))
 		logging.debug('Generated temp data: ' + str(tempData))
 		
 		if self.dataMsgListener:
-			self.dataMsgListener.handleSensorMessage(humidityData)
-			self.dataMsgListener.handleSensorMessage(pressureData)
-			self.dataMsgListener.handleSensorMessage(tempData)
+			if humidityData:
+				self.dataMsgListener.handleSensorMessage(humidityData)
+			if pressureData:
+				self.dataMsgListener.handleSensorMessage(pressureData)
+			if tempData:
+				self.dataMsgListener.handleSensorMessage(tempData)
 		
 	def setDataMessageListener(self, listener: IDataMessageListener) :
 		if listener:
