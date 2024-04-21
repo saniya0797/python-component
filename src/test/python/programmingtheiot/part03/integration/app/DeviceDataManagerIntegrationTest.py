@@ -61,7 +61,7 @@ class DeviceDataManagerIntegrationTest(unittest.TestCase):
 		ddMgr.startManager()
 		
 		# 5 min's should be long enough to run the tests and manually adjust the emulator values
-		sleep(120)
+		sleep(300)
 		
 		ddMgr.stopManager()
 		

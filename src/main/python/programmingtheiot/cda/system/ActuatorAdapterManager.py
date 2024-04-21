@@ -20,7 +20,7 @@ from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
 
-class ActuatorAdapterManager(object):
+class ActuatorAdapterManager(IDataMessageListener):
 	
 	def __init__(self, dataMsgListener: IDataMessageListener = None):
 		"""
@@ -42,7 +42,7 @@ class ActuatorAdapterManager(object):
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.ENABLE_EMULATOR_KEY)
 		self.deviceID     = \
 			self.configUtil.getProperty( \
-				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.DEVICE_LOCATION_ID_KEY, defaultVal = ConfigConst.NOT_SET)
+				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.DEVICE_ID_KEY, defaultVal = ConfigConst.NOT_SET)
 		self.locationID   = \
 			self.configUtil.getProperty( \
 				section = ConfigConst.CONSTRAINED_DEVICE, key = ConfigConst.DEVICE_LOCATION_ID_KEY, defaultVal = ConfigConst.NOT_SET)
@@ -96,7 +96,7 @@ class ActuatorAdapterManager(object):
 		if listener:
 			self.dataMsgListener = listener
 
-	def sendActuatorCommand(self, data: ActuatorData) -> ActuatorData:
+	def sendActuatorCommand(self, data: ActuatorData) -> bool:
 		"""
         Sends an actuator command and processes the actuation event.
 
@@ -130,7 +130,7 @@ class ActuatorAdapterManager(object):
 		else:
 			logging.warning("Actuator request received. Message is empty or response. Ignoring.")
 		
-		return None
+		return False
 	
 
 	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
@@ -145,4 +145,5 @@ class ActuatorAdapterManager(object):
         """
 		if listener:
 			self.dataMsgListener = listener
+	
 

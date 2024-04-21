@@ -11,7 +11,6 @@ import logging
 import unittest
 
 from time import sleep
-from time import sleep
 
 import programmingtheiot.common.ConfigConst as ConfigConst
 
@@ -22,10 +21,6 @@ from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
 from programmingtheiot.data.DataUtil import DataUtil
 from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.data.SensorData import SensorData
-import programmingtheiot.common.ConfigConst as ConfigConst
-
-from programmingtheiot.cda.app.DeviceDataManager import DeviceDataManager
-from programmingtheiot.data.ActuatorData import ActuatorData
 
 class DeviceDataManagerWithCommsTest(unittest.TestCase):
 	"""
@@ -45,6 +40,9 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 	test case from the command line, as it will likely fail
 	if run within an IDE in native Windows.
 	
+	NOTE 2: This test requires you to examine each test case,
+	none of which will execute as they're currently disabled.
+	Choose the test
 	"""
 	
 	@classmethod
@@ -59,23 +57,22 @@ class DeviceDataManagerWithCommsTest(unittest.TestCase):
 		pass
 
 	def testActuatorDataCallback(self):
-		# Option 1 example (be sure to disable comm's using PiotConfig.props):
+	# Option 1 example (be sure to disable comm's using PiotConfig.props):
 		ddMgr = DeviceDataManager()
-		
-		# Option 2 example (be sure to update the DeviceDataManager constructor):
+	
+	# Option 2 example (be sure to update the DeviceDataManager constructor):
+	#ddMgr = DeviceDataManager(disableAllComms = True)
+	
 		#ddMgr = DeviceDataManager(disableAllComms = True)
 		
-		#ddMgr = DeviceDataManager(disableAllComms = True)
-		
-		actuatorData = ActuatorData(typeID = ConfigConst.HVAC_ACTUATOR_TYPE)
+		actuatorData = ActuatorData( typeID= ConfigConst.HVAC_ACTUATOR_TYPE)
 		actuatorData.setCommand(ConfigConst.COMMAND_ON)
 		actuatorData.setStateData("This is a test.")
-		actuatorData.setValue(50)
+		actuatorData.setValue(52)
 		
 		ddMgr.handleActuatorCommandMessage(actuatorData)
 		
 		sleep(10)
-		
 
 if __name__ == "__main__":
 	unittest.main()
