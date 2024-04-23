@@ -20,7 +20,7 @@ from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
 
-class ActuatorAdapterManager(IDataMessageListener):
+class ActuatorAdapterManager(object):
 	
 	def __init__(self, dataMsgListener: IDataMessageListener = None):
 		"""
@@ -31,6 +31,7 @@ class ActuatorAdapterManager(IDataMessageListener):
 		self.dataMsgListener = dataMsgListener
 
 		self.useEmulator = True
+		self.useSimulator = True
 
 		self.configUtil = ConfigUtil()
 		
@@ -50,7 +51,7 @@ class ActuatorAdapterManager(IDataMessageListener):
 		self.humidifierActuator = None
 		self.hvacActuator       = None
 		self.ledDisplayActuator = None
-		
+
 		self._initEnvironmentalActuationTasks()
 	
 	def _initEnvironmentalActuationTasks(self):
@@ -63,9 +64,8 @@ class ActuatorAdapterManager(IDataMessageListener):
 		
 		# create the HVAC actuator
 			self.hvacActuator = HvacActuatorSimTask()
-
 			
-			self.hvacActuator = HvacActuatorSimTask()
+
 		else:
 			hueModule = import_module('programmingtheiot.cda.emulated.HumidifierEmulatorTask', 'HumidiferEmulatorTask')
 			hueClazz = getattr(hueModule, 'HumidifierEmulatorTask')
@@ -83,7 +83,7 @@ class ActuatorAdapterManager(IDataMessageListener):
 
 
 	
-	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+	def setDataMessageListener(self, listener: IDataMessageListener=None) :
 		"""
         Sets the data message listener for handling actuation messages.
 
@@ -96,7 +96,7 @@ class ActuatorAdapterManager(IDataMessageListener):
 		if listener:
 			self.dataMsgListener = listener
 
-	def sendActuatorCommand(self, data: ActuatorData) -> bool:
+	def sendActuatorCommand(self, data: ActuatorData=None) -> bool:
 		"""
         Sends an actuator command and processes the actuation event.
 
@@ -106,6 +106,8 @@ class ActuatorAdapterManager(IDataMessageListener):
         Returns:
             ActuatorData: An instance of ActuatorData representing the actuator response.
         """
+
+		
 		if data and not data.isResponseFlagEnabled():
 			if data.getLocationID() == self.locationID:
 				logging.info("Actuator command received for location ID %s. Processing...", str(data.getLocationID()))
@@ -117,12 +119,10 @@ class ActuatorAdapterManager(IDataMessageListener):
 					responseData = self.humidifierActuator.updateActuator(data)
 				elif aType == ConfigConst.HVAC_ACTUATOR_TYPE and self.hvacActuator:
 					responseData = self.hvacActuator.updateActuator(data)
-				elif aType == ConfigConst.LED_DISPLAY_ACTUATOR_TYPE and self.ledDisplayActuator:
+					
 					responseData = self.ledDisplayActuator.updateActuator(data)
 				else:
 					logging.warning("No valid actuator type. Ignoring actuation for type: %s", data.getTypeID())
-					
-				
 
 				return responseData
 			else:
@@ -132,18 +132,21 @@ class ActuatorAdapterManager(IDataMessageListener):
 		
 		return False
 	
-
-	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+	def startManager(self) -> bool:
 		"""
-        Sets the data message listener for handling actuation messages.
-
-        Args:
-            listener (IDataMessageListener): An instance of the IDataMessageListener.
-
-        Returns:
-            bool: True if the listener is set successfully, False otherwise.
-        """
-		if listener:
-			self.dataMsgListener = listener
+		Starts the manager. This simply registers the current actuator state and - depending on
+		the configuration - may activate the actuator command listeners.
+		
+		@return bool True on success; False otherwise
+		"""
+		return True
+	
+	def stopManager(self) -> bool:
+		"""
+		Stops the manager. Currently does nothing.
+		
+		@return bool True on success; False otherwise
+		"""
+		return True
 	
 
