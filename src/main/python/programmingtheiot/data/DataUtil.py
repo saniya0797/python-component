@@ -48,6 +48,7 @@ class DataUtil():
 		jsonData = self._generateJsonData(obj = data, useDecForFloat = False)
 		
 		logging.info("Encoding ActuatorData to JSON [post] --> " + str(jsonData))
+		return jsonData
 	
 	def sensorDataToJson(self, data: SensorData = None,useDecForFloat: bool = False):
 		"""

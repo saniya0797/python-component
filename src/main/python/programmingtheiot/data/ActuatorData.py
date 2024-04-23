@@ -28,7 +28,7 @@ class ActuatorData(BaseIotData):
 		super(ActuatorData, self).__init__(name = name, typeID = typeID, d = d)
 		self.value = ConfigConst.DEFAULT_VAL
 		self.command = ConfigConst.DEFAULT_COMMAND
-		self.stateData = ""
+		self.stateData = None
 		self.isResponse = False
 		
 	def getCommand(self) -> int:
@@ -110,4 +110,5 @@ class ActuatorData(BaseIotData):
 			self.stateData = data.getStateData()
 			self.value = data.getValue()
 			self.isResponse = data.isResponseFlagEnabled()
-		
+
+	

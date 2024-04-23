@@ -54,8 +54,7 @@ class HvacEmulatorTask(BaseActuatorSimTask):
             int: The status code indicating the result of the activation.
         """
 		if self.sh.screen:
-			msg = self.getSimpleName() 
-			print(str(val) +'HVAC On')
+			msg = self.getSimpleName() + ' ON: ' + str(val) + 'C'
 			self.sh.screen.scroll_text(msg)
 			return 0
 		else:
@@ -74,11 +73,10 @@ class HvacEmulatorTask(BaseActuatorSimTask):
             int: The status code indicating the result of the deactivation.
         """
 		if self.sh.screen:
-			msg = self.getSimpleName() 
-			print(str(val) +'HVAC Off')
+			msg = self.getSimpleName() + ' OFF'
+			#print(msg+ '******************** HVAC OFF ************************** '+msg)
 			self.sh.screen.scroll_text(msg)
 			
-			# optional sleep (5 seconds) for message to scroll before clearing display
 			sleep(5)
 			
 			self.sh.screen.clear()

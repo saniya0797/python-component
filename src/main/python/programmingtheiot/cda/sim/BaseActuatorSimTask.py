@@ -43,9 +43,9 @@ class BaseActuatorSimTask():
 		pass
 	
 	def getSimpleName(self) -> str:
-		pass
+		return self.simpleName
 	
-	def updateActuator(self, data: ActuatorData) -> bool:
+	def updateActuator(self, data: ActuatorData) -> ActuatorData:
 		"""
         Updates the actuator task based on incoming ActuatorData.
         Delegates actuator-specific work to _activateActuator() and _deactivateActuator().
