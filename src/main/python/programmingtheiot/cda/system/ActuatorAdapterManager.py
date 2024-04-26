@@ -20,6 +20,8 @@ from programmingtheiot.data.ActuatorData import ActuatorData
 from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
 
+
+
 class ActuatorAdapterManager(object):
 	
 	def __init__(self, dataMsgListener: IDataMessageListener = None):

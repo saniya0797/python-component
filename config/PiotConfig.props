@@ -18,8 +18,8 @@ port           = 1883
 securePort     = 8883
 defaultQoS     = 0
 keepAlive      = 60
-enableAuth     = False
-enableCrypt    = False
+enableAuth     = True
+enableCrypt    = True
 
 #
 # CoAP client configuration information
@@ -73,6 +73,11 @@ tempSimCeiling     =   25.0
 handleTempChangeOnDevice = True
 triggerHvacTempFloor     = 18.0
 triggerHvacTempCeiling   = 20.0
+
+# configurable limits for actuator triggers
+handlePressureChangeOnDevice = True
+triggerHvacPressureFloor     = 990.0
+triggerHvacPressureCeiling  = 1010.0
 
 # camera settings
 streamHostAddr      = 127.0.0.1

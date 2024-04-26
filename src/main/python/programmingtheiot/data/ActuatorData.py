@@ -13,102 +13,116 @@ from programmingtheiot.data.BaseIotData import BaseIotData
 
 class ActuatorData(BaseIotData):
 	"""
-    Represents actuator data, extending the BaseIotData class.
-    This class provides a shell for student implementation.
-    """
+	 ActuatorData class represents a simple actuator data command.
+	
+	"""
 
 	def __init__(self, typeID: int = ConfigConst.DEFAULT_ACTUATOR_TYPE, name = ConfigConst.NOT_SET, d = None):
+		
 		"""
-        Constructor for ActuatorData class.
-        
-        @param typeID The type ID of the actuator data.
-        @param name The name of the actuator data.
-        @param d The data dictionary containing additional attributes.
-        """
+		Call the constructor of the parent class (BaseIotData)
+		initialize class-scoped variables for value, command, stateData, and isResponse.
+		
+		@param typeID: The type ID for the actuator (default: ConfigConst.DEFAULT_ACTUATOR_TYPE).
+		@param name: The name of the actuator (default: ConfigConst.NOT_SET).
+		
+		"""
+		
+		#Call the constructor of the parent class (BaseIotData)
 		super(ActuatorData, self).__init__(name = name, typeID = typeID, d = d)
+		
+		# Initialize class-scoped variables with default values
 		self.value = ConfigConst.DEFAULT_VAL
 		self.command = ConfigConst.DEFAULT_COMMAND
-		self.stateData = None
+		self.stateData = ""
 		self.isResponse = False
-		
+		pass
+	
 	def getCommand(self) -> int:
+		
+		""" 
+		@return: The command value as Integer  
 		"""
-        Gets the command associated with the actuator data.
-        
-        @return int The command value.
-        """
+		
 		return self.command
+		pass
 	
 	def getStateData(self) -> str:
+		 
+		""" 
+		@return The state data as a string. 
 		"""
-        Gets the state data associated with the actuator data.
-        
-        @return str The state data.
-        """
+		
 		return self.stateData
+		pass
 	
 	def getValue(self) -> float:
+		
 		"""
-        Gets the value associated with the actuator data.
-        
-        @return float The value.
-        """
+		@return: The actuator value as a float.
+		
+		"""
 		return self.value
-
+		pass
 	
 	def isResponseFlagEnabled(self) -> bool:
 		"""
-        Checks if the actuator data is marked as a response.
-        
-        @return bool True if the actuator data is marked as a response, False otherwise.
-        """
+		Check if the isResponse flag is enabled.
+
+    	@return: True if the isResponse flag is enabled, False otherwise.
+		"""
 		return self.isResponse
 	
 	def setCommand(self, command: int):
+		
 		"""
-        Sets the command associated with the actuator data.
-        
-        @param command The command value to set.
-        """
-		self.command = command
+		@param command: The command value to set as an integer.
+		"""
+		self.command=command
 		self.updateTimeStamp()
+		pass
 	
 	def setAsResponse(self):
 		"""
-        Marks the actuator data as a response.
-        """
+		Set the isResponse flag as True.
+
+		This indicates that the actuator data is a response.
+
+		@return: None
+		"""
 		self.isResponse = True
 		self.updateTimeStamp()
+		pass
 		
 	def setStateData(self, stateData: str):
+		""".
+		@param:  stateData: The state data to set as a string.
 		"""
-        Sets the state data associated with the actuator data.
-        
-        @param stateData The state data to set.
-        """
 		if stateData:
 			self.stateData = stateData
 			self.updateTimeStamp()
+		pass
 	
 	def setValue(self, val: float):
 		"""
-        Sets the value associated with the actuator data.
-        
-        @param val The value to set.
-        """
+		@param:  val: The actuator value to set as a float.
+		"""
 		self.value = val
 		self.updateTimeStamp()
+		pass
 		
 	def _handleUpdateData(self, data):
+		
 		"""
-        Handles the update of actuator data attributes based on another ActuatorData instance.
-        
-        @param data The ActuatorData instance to use for the update.
-        """
+		Handle updating the ActuatorData properties from another ActuatorData object.
+
+		@param data: The ActuatorData object to update from.
+		
+		"""
 		if data and isinstance(data, ActuatorData):
 			self.command = data.getCommand()
 			self.stateData = data.getStateData()
 			self.value = data.getValue()
 			self.isResponse = data.isResponseFlagEnabled()
-
-	
+		pass
+		

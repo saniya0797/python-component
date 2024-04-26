@@ -198,7 +198,7 @@ CDA_SYSTEM_PERF_MSG_RESOURCE          = PRODUCT_NAME + '/' + CONSTRAINED_DEVICE 
 # NOTE: You will need to update this!!
 #/connectedDevices/python-component/src/main/python/programmingtheiot/common/ConfigConst.py
 DEFAULT_CONFIG_FILE_NAME = '/connectedDevices/python-component/config/PiotConfig.props'
-DEFAULT_CRED_FILE_NAME   = '/connectedDevices/python-componentcred/PiotCred.props'
+DEFAULT_CRED_FILE_NAME   = '/connectedDevices/python-component/cred/PiotCred.props'
 
 TEST_GDA_DATA_PATH_KEY = 'testGdaDataPath'
 TEST_CDA_DATA_PATH_KEY = 'testCdaDataPath'
@@ -273,6 +273,10 @@ TEMP_SIM_CEILING_KEY     = 'tempSimCeiling'
 HANDLE_TEMP_CHANGE_ON_DEVICE_KEY = 'handleTempChangeOnDevice'
 TRIGGER_HVAC_TEMP_FLOOR_KEY   = 'triggerHvacTempFloor'
 TRIGGER_HVAC_TEMP_CEILING_KEY = 'triggerHvacTempCeiling'
+
+HANDLE_PRESSURE_CHANGE_ON_DEVICE_KEY = 'handlePressureChangeOnDevice'
+TRIGGER_PRESSURE_FLOOR_KEY   = 'triggerHvacPressureFloor'
+TRIGGER_PRESSURE_CEILING_KEY = 'triggerHvacPressureCeiling'
 
 RUN_FOREVER_KEY    = 'runForever'
 TEST_EMPTY_APP_KEY = 'testEmptyApp'
