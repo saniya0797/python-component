@@ -55,11 +55,13 @@ class DeviceDataManager(IDataMessageListener):
 			self.sysPerfMgr = SystemPerformanceManager()
 			self.sysPerfMgr.setDataMessageListener(self)
 			logging.info("Local system performance tracking enabled")
+
 		# instantiating SensorAdapterManager and setting the IDataMessageListener.
 		if self.enableSensing:
 			self.sensorAdapterMgr = SensorAdapterManager()
 			self.sensorAdapterMgr.setDataMessageListener(self)
 			logging.info("Local sensor tracking enabled")
+			
 		# instantiating ActuatorAdapterManager and setting the IDataMessageListener.
 		if self.enableActuation:
 			self.actuatorAdapterMgr = ActuatorAdapterManager(dataMsgListener = self)
