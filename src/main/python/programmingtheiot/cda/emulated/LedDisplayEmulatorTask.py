@@ -50,6 +50,8 @@ class LedDisplayEmulatorTask(BaseActuatorSimTask):
         """
 		if self.sh.screen:
 			self.sh.screen.scroll_text(stateData, size = 8)
+			print('LED ON')
+
 			return 0
 		else:
 			logging.warning("No SenseHAT LED screen instance to write.")
@@ -68,6 +70,8 @@ class LedDisplayEmulatorTask(BaseActuatorSimTask):
         """
 		if self.sh.screen:
 			self.sh.screen.clear()
+			print('LED OFF')
+	
 			return 0
 		else:
 			logging.warning("No SenseHAT LED screen instance to clear / close.")

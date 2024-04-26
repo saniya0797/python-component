@@ -50,7 +50,7 @@ class HumidifierEmulatorTask(BaseActuatorSimTask):
             int: Returns 0 if the activation is successful, -1 otherwise.
         """
 		if self.sh.screen:
-			msg = self.getSimpleName() 
+			msg = self.getSimpleName() +'ON'
 			self.sh.screen.scroll_text(msg)
 			return 0
 		else:
@@ -67,7 +67,7 @@ class HumidifierEmulatorTask(BaseActuatorSimTask):
             int: Returns 0 if the deactivation is successful, -1 otherwise.
         """
 		if self.sh.screen:
-			msg = self.getSimpleName() 
+			msg = self.getSimpleName() + 'OFF'
 			self.sh.screen.scroll_text(msg)
 			
 			# optional sleep (5 seconds) for message to scroll before clearing display
